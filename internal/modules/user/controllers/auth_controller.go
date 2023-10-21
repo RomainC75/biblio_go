@@ -1,9 +1,13 @@
 package controllers
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 
+	"gitub.com/RomainC75/biblio/internal/modules/user/requests/auth"
 	UserService "gitub.com/RomainC75/biblio/internal/modules/user/services"
+	"gitub.com/RomainC75/biblio/pkg/errors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,49 +32,38 @@ func (controller *Controller) Register(c *gin.Context) {
 
 func (controller *Controller) HandleRegister(c *gin.Context) {
 	// validate request
-	// var request auth.RegisterRequest
-	// if err := c.ShouldBind(&request); err != nil {
-	// 	// see also ShouldBindJSON()
-	// 	errors.Init()
-	// 	errors.SetFromErrors(err)
-	// 	sessions.Set(c, "errors", converters.MapToString(errors.Get()))
+	var request auth.RegisterRequest
+	if err := c.ShouldBind(&request); err != nil {
+		// 	// see also ShouldBindJSON()
+		errors.Init()
+		errors.SetFromErrors(err)
 
-	// 	old.Init()
-	// 	old.Set(c)
-	// 	sessions.Set(c, "old", converters.UrlValuesToString(old.Get()))
+		fmt.Println("-> err:  ", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "body needs a valid email + password"})
+		return
+	}
 
-	// 	c.Redirect(http.StatusFound, "/register")
-	// 	return
-	// }
+	if controller.userService.CheckIfUserExists(request.Email) {
+		// see also ShouldBindJSON()
+		errors.Init()
+		errors.Add("email", "email address already used")
 
-	// if controller.userService.CheckIfUserExists(request.Email) {
-	// 	// see also ShouldBindJSON()
-	// 	errors.Init()
-	// 	errors.Add("email", "email address already used")
-	// 	sessions.Set(c, "errors", converters.MapToString(errors.Get()))
-
-	// 	old.Init()
-	// 	old.Set(c)
-	// 	sessions.Set(c, "old", converters.UrlValuesToString(old.Get()))
-
-	// 	c.Redirect(http.StatusFound, "/register")
-	// 	return
-	// }
+		c.JSON(http.StatusConflict, gin.H{"message": "user already exists"})
+		return
+	}
 
 	// create the user
-	// user, err := controller.userService.Create(request)
+	user, err := controller.userService.Create(request)
 
-	// // check if any error at user creation
-	// if err != nil {
-	// 	c.Redirect(http.StatusFound, "/register")
-	// 	return
-	// }
-
-	// sessions.Set(c, "auth", strconv.Itoa(int(user.ID)))
+	// check if any error at user creation
+	if err != nil {
+		c.Redirect(http.StatusFound, "/register")
+		return
+	}
 
 	// //redirect to homepage
-	// log.Printf("user successfully created with name %s \n", user.Name)
-	// c.Redirect(http.StatusFound, "/")
+	log.Printf("user successfully created with email %s \n", user.Email)
+	c.JSON(http.StatusOK, gin.H{"message": "user created", "user": user})
 
 }
 

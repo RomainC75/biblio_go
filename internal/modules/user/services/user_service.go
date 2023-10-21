@@ -31,7 +31,6 @@ func (userService *UserService) Create(request auth.RegisterRequest) (UserRespon
 		return response, errors.New("error ashing the password")
 	}
 
-	user.Name = request.Name
 	user.Email = request.Email
 	user.Password = string(hashedPassword)
 
