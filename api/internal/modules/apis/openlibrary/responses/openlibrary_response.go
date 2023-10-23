@@ -1,19 +1,19 @@
 package responses
 
 type FoundBook struct {
-	author []string
-	key    string
-	title  string
+	Author []string `json:"authot"`
+	Key    string   `json:"key"`
+	Title  string   `json:"title"`
 }
 
-type Search struct {
-	docs          []FoundBook
-	numFound      int
-	numFoundExact bool
-	num_found     int
-	// offset
-	q     string
-	start int
+type SearchResponse struct {
+	Docs          []FoundBook `json:"docs"`
+	NumFound      int         `json:"numFound"`
+	NumFoundExact bool        `json:"numFoundExact"`
+	Num_found     int         `json:"num_found"`
+	Offset        any         `json:"offset"`
+	Q             string      `json:"q"`
+	Start         int         `json:"start"`
 }
 
 // if need to transform the response !!

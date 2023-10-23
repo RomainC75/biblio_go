@@ -19,7 +19,8 @@ func New() *Controller {
 }
 
 func (controller *Controller) Search(c *gin.Context) {
-	services.Search("")
+	// services.Search("")
+	services.SearchByReq("0860519600")
 
 	c.JSON(http.StatusOK, gin.H{"message": "Search Route"})
 	// html.Render(c, http.StatusOK, "modules/user/html/login", gin.H{
