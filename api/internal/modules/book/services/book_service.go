@@ -7,6 +7,7 @@ import (
 	"gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/responses"
 	BookModel "gitub.com/RomainC75/biblio/internal/modules/book/models"
 	BookRepository "gitub.com/RomainC75/biblio/internal/modules/book/repositories"
+	BookRequest "gitub.com/RomainC75/biblio/internal/modules/book/requests"
 )
 
 type BookService struct {
@@ -19,7 +20,7 @@ func New() *BookService {
 	}
 }
 
-func (bookService *BookService) Create(book responses.SearchResponse) (BookModel.Book, error) {
+func (bookService *BookService) CreateFromSearchResponse(book responses.SearchResponse) (BookModel.Book, error) {
 
 	_, err := bookService.bookRepository.FindByISBN(book.Q)
 	if err == nil {
@@ -38,4 +39,9 @@ func (bookService *BookService) Create(book responses.SearchResponse) (BookModel
 	result.Authors = createdAuthors
 
 	return result, nil
+}
+
+func (bookService *BookService) CreateBook(book BookRequest.CreateBookRequest) (BookModel.Book, error) {
+
+	return BookModel.Book{}, nil
 }

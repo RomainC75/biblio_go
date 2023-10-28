@@ -29,7 +29,7 @@ func ToBook(book bookModel.Book) Book {
 	return Book{
 		ID:      book.ID,
 		Title:   book.Title,
-		ISBN:    book.ISNB,
+		ISBN:    book.ISBN,
 		Authors: authors,
 	}
 }

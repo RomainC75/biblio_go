@@ -22,5 +22,7 @@ func Routes(router *gin.Engine) {
 
 	apiController := apiCtrl.New()
 	router.GET("/search", apiController.Search)
+	router.POST("/book", apiController.CreateNewBook)
+	router.GET("/book", apiController.GetBooks)
 
 }

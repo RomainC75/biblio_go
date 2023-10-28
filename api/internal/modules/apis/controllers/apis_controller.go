@@ -7,7 +7,9 @@ import (
 	// UserService "gitub.com/RomainC75/biblio/internal/modules/user/services"
 	"github.com/gin-gonic/gin"
 	OpenLibraryService "gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/services"
+	BookRequest "gitub.com/RomainC75/biblio/internal/modules/book/requests"
 	BookService "gitub.com/RomainC75/biblio/internal/modules/book/services"
+	Utils "gitub.com/RomainC75/biblio/pkg/utils"
 )
 
 type Controller struct {
@@ -26,7 +28,7 @@ func (controller *Controller) Search(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
 	}
-	book, err := controller.bookService.Create(foundBook)
+	book, err := controller.bookService.CreateFromSearchResponse(foundBook)
 	fmt.Println("inside controller ", book, err)
 
 	if err != nil {
@@ -34,4 +36,16 @@ func (controller *Controller) Search(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": book})
+}
+
+func (controller *Controller) CreateNewBook(c *gin.Context) {
+	var request BookRequest.CreateBookRequest
+	if err := c.ShouldBind(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	Utils.PrettyDisplay(request)
+}
+
+func (controller *Controller) GetBooks(c *gin.Context) {
+
 }

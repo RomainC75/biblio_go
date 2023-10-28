@@ -7,7 +7,8 @@ import (
 )
 
 type BookServiceInterface interface {
-	Create(book responses.SearchResponse) (BookModel.Book, error)
+	CreateFromSearchResponse(book responses.SearchResponse) (BookModel.Book, error)
+
 	// CheckIfUserExists(email string) bool
 	// HandleUserLogin(request auth.LoginRequest) (UserResponse.User, error)
 }
