@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 
 	"gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/responses"
@@ -20,21 +21,13 @@ func New() *BookService {
 
 func (bookService *BookService) Create(book responses.SearchResponse) (BookModel.Book, error) {
 
-	foundBook, err := bookService.bookRepository.FindByISBN(book.Q)
+	_, err := bookService.bookRepository.FindByISBN(book.Q)
 	if err == nil {
-		return BookModel.Book{}, err
+		fmt.Printf("EEEEEERRRROOOOOOORRRRRR!!!!!!!!!!!!!!!!")
+		return BookModel.Book{}, errors.New("isbn already in DB")
 	}
-	fmt.Printf("--> foundBook : ", foundBook)
-	fmt.Printf("--> foundBook.ID :  : ", foundBook.ID)
-
-	// bookModell := responses.ToBookModel(book)
-	fmt.Println("-->INSIDE SERVICE------")
-	fmt.Println("-->INSIDE SERVICE : ", book)
-	fmt.Println("-->INSIDE SERVICE : ", book.Docs[0].Authors[0])
-	// create/get authors
 
 	createdAuthors := bookService.bookRepository.FirstOrCreateAuthors(book.Docs[0].Authors)
-	fmt.Println("--> createdAuthor : ", createdAuthors)
 
 	newBook := BookModel.Book{
 		Authors: createdAuthors,
@@ -43,14 +36,6 @@ func (bookService *BookService) Create(book responses.SearchResponse) (BookModel
 	}
 	result := bookService.bookRepository.Create(newBook)
 	result.Authors = createdAuthors
-	// newBook := bookService.bookRepository.Create(bookModell)
-	// fmt.Print("---->", newBook)
-	// if newBook.ID == 0 {
-	// 	return response, errors.New("error creating the user")
-	// }
 
-	fmt.Println("RESULT, ", result)
-
-	// return BookResponse.ToBook(result), nil
 	return result, nil
 }

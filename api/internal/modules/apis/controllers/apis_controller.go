@@ -24,10 +24,14 @@ func (controller *Controller) Search(c *gin.Context) {
 
 	foundBook, err := OpenLibraryService.SearchByReq("0552778079")
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
 	}
 	book, err := controller.bookService.Create(foundBook)
-	fmt.Println(foundBook)
+	fmt.Println("inside controller ", book, err)
 
+	if err != nil {
+		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"message": book})
 }
