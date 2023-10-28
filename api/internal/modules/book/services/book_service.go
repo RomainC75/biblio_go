@@ -42,6 +42,15 @@ func (bookService *BookService) CreateFromSearchResponse(book responses.SearchRe
 }
 
 func (bookService *BookService) CreateBook(book BookRequest.CreateBookRequest) (BookModel.Book, error) {
+	createdAuthors := bookService.bookRepository.FirstOrCreateAuthors(book.Authors)
 
-	return BookModel.Book{}, nil
+	newBook := BookModel.Book{
+		Authors: createdAuthors,
+		Title:   book.Title,
+		ISBN:    book.ISBN,
+		Genre:   book.Genre,
+	}
+	result := bookService.bookRepository.Create(newBook)
+	// handle errors
+	return result, nil
 }

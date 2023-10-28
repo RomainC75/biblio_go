@@ -43,7 +43,13 @@ func (controller *Controller) CreateNewBook(c *gin.Context) {
 	if err := c.ShouldBind(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
+
 	Utils.PrettyDisplay(request)
+
+	book, _ := controller.bookService.CreateBook(request)
+
+	c.JSON(http.StatusBadGateway, gin.H{"message": book})
+
 }
 
 func (controller *Controller) GetBooks(c *gin.Context) {
