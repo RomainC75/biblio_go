@@ -21,8 +21,19 @@ func (BookRepository *BookRepository) Create(book bookModel.Book) bookModel.Book
 	var newBook bookModel.Book
 
 	BookRepository.DB.Create(&book).Scan(&newBook)
-
+	// BookRepository.DB.Save(&book)
 	return newBook
+}
+
+func (BookRepository *BookRepository) FirstOrCreateAuthors(newAuthors []string) []bookModel.Author {
+	var authors []bookModel.Author
+	for _, newAuthor := range newAuthors {
+		var author bookModel.Author
+
+		BookRepository.DB.FirstOrCreate(&author, &bookModel.Author{Name: newAuthor})
+		authors = append(authors, author)
+	}
+	return authors
 }
 
 func (BookRepository *BookRepository) FindByEmail(email string) bookModel.Book {

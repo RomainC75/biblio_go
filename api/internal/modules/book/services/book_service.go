@@ -3,10 +3,9 @@ package services
 import (
 	"fmt"
 
-	bookModel "gitub.com/RomainC75/biblio/internal/modules/book/models"
+	"gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/responses"
+	BookModel "gitub.com/RomainC75/biblio/internal/modules/book/models"
 	BookRepository "gitub.com/RomainC75/biblio/internal/modules/book/repositories"
-	BookResponse "gitub.com/RomainC75/biblio/internal/modules/book/responses"
-	"gitub.com/RomainC75/biblio/internal/modules/user/requests/auth"
 )
 
 type BookService struct {
@@ -19,39 +18,31 @@ func New() *BookService {
 	}
 }
 
-func (bookService *BookService) Create(request auth.RegisterRequest) (BookResponse.Book, error) {
-	// var response BookResponse.Book
-	var book bookModel.Book
-	fmt.Println("---------> create a new User !")
+func (bookService *BookService) Create(book responses.SearchResponse) (BookModel.Book, error) {
 
-	newBook := bookService.bookRepository.Create(book)
-	fmt.Print("---->", newBook)
+	// bookModell := responses.ToBookModel(book)
+	fmt.Println("-->INSIDE SERVICE------")
+	fmt.Println("-->INSIDE SERVICE : ", book)
+	fmt.Println("-->INSIDE SERVICE : ", book.Docs[0].Authors[0])
+	// create/get authors
+	createdAuthors := bookService.bookRepository.FirstOrCreateAuthors(book.Docs[0].Authors)
+	fmt.Println("--> createdAuthor : ", createdAuthors)
+
+	newBook := BookModel.Book{
+		Authors: createdAuthors,
+		Title:   book.Docs[0].Title,
+		ISNB:    book.Q,
+	}
+	result := bookService.bookRepository.Create(newBook)
+	result.Authors = createdAuthors
+	// newBook := bookService.bookRepository.Create(bookModell)
+	// fmt.Print("---->", newBook)
 	// if newBook.ID == 0 {
 	// 	return response, errors.New("error creating the user")
 	// }
-	return BookResponse.ToBook(newBook), nil
 
-	// return BookResponse.ToUser(newUser), nil
+	fmt.Println("RESULT, ", result)
+
+	// return BookResponse.ToBook(result), nil
+	return result, nil
 }
-
-// func (userService *UserService) CheckIfUserExists(email string) bool {
-// 	user := userService.userRepository.FindByEmail(email)
-// 	return user.ID != 0
-// }
-
-// func (userService *UserService) HandleUserLogin(request auth.LoginRequest) (UserResponse.User, error) {
-// 	var response UserResponse.User
-// 	existUser := userService.userRepository.FindByEmail(request.Email)
-
-// 	if existUser.ID == 0 {
-// 		return response, errors.New("Invalid Credentials !")
-// 	}
-
-// 	err := bcrypt.CompareHashAndPassword([]byte(existUser.Password), []byte(request.Password))
-// 	if err != nil {
-// 		return response, errors.New("invalid credentials !")
-// 	}
-
-// 	return UserResponse.ToUser(existUser), nil
-
-// }

@@ -1,9 +1,9 @@
 package responses
 
 type FoundBook struct {
-	Author []string `json:"authot"`
-	Key    string   `json:"key"`
-	Title  string   `json:"title"`
+	Authors []string `json:"author_name"`
+	Key     string   `json:"key"`
+	Title   string   `json:"title"`
 }
 
 type SearchResponse struct {
@@ -15,6 +15,20 @@ type SearchResponse struct {
 	Q             string      `json:"q"`
 	Start         int         `json:"start"`
 }
+
+// func ToBookModel(searchResponse SearchResponse, Authors ) (BookModel.Book, error) {
+// 	if len(searchResponse.Docs == 0) {
+// 		var bookModel BookModel.Book
+// 		return bookModel, nil
+// 	}
+// 	return BookModel.Book{
+// 		Title:   searchResponse.Docs[0].Title,
+// 		ISNB:    searchResponse.Q,
+// 		Authors: []*models.Author{
+// 			Name: searchResponse.Docs[0].Authors[0],
+// 		},
+// 	}
+// }
 
 // if need to transform the response !!
 // func ToUser(user userModel.User) User {

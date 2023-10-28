@@ -17,7 +17,7 @@ import (
 // 	}
 // }
 
-func SearchByReq(queryStr string) (int, error) {
+func SearchByReq(queryStr string) (responses.SearchResponse, error) {
 	baseURL := "https://openlibrary.org/"
 	resource := "/search.json"
 	params := url.Values{}
@@ -36,7 +36,7 @@ func SearchByReq(queryStr string) (int, error) {
 	resp, err := http.Get(urlStr)
 
 	if err != nil {
-		return 0, err
+		return responses.SearchResponse{}, err
 	}
 	defer resp.Body.Close()
 
@@ -45,11 +45,11 @@ func SearchByReq(queryStr string) (int, error) {
 	err = decoder.Decode(&response)
 
 	if err != nil {
-		return 0, err
+		return responses.SearchResponse{}, err
 	}
 	fmt.Println("--->", response)
 	// fmt.Println("-----> RESP : ", resp.Body)
-	return 1, nil
+	return response, nil
 }
 
 func Search(queryStr string) (int, error) {

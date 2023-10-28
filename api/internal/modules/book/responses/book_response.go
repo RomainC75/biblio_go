@@ -18,10 +18,18 @@ type Author struct {
 }
 
 func ToBook(book bookModel.Book) Book {
+	var authors []Author
+	for _, author := range book.Authors {
+		newAuthor := Author{
+			ID:   author.ID,
+			Name: author.Name,
+		}
+		authors = append(authors, newAuthor)
+	}
 	return Book{
-		ID:    book.ID,
-		Title: book.Title,
-		ISBN:  book.ISNB,
-		// Authors: book.Authors,
+		ID:      book.ID,
+		Title:   book.Title,
+		ISBN:    book.ISNB,
+		Authors: authors,
 	}
 }

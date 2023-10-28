@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	// UserService "gitub.com/RomainC75/biblio/internal/modules/user/services"
@@ -21,8 +22,12 @@ func New() *Controller {
 
 func (controller *Controller) Search(c *gin.Context) {
 
-	OpenLibraryService.SearchByReq("0860519600")
+	foundBook, err := OpenLibraryService.SearchByReq("0552778079")
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
+	}
+	book, err := controller.bookService.Create(foundBook)
+	fmt.Println(foundBook)
 
-	c.JSON(http.StatusOK, gin.H{"message": "Search Route"})
-
+	c.JSON(http.StatusOK, gin.H{"message": book})
 }

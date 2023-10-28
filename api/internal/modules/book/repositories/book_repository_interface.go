@@ -1,11 +1,12 @@
 package repositories
 
 import (
-	userModel "gitub.com/RomainC75/biblio/internal/modules/book/models"
+	bookModel "gitub.com/RomainC75/biblio/internal/modules/book/models"
 )
 
 type BookRepositoryInterface interface {
-	Create(book userModel.Book) userModel.Book
-	FindByEmail(email string) userModel.Book
-	FindById(id int) userModel.Book
+	Create(book bookModel.Book) bookModel.Book
+	FirstOrCreateAuthors(newAuthors []string) []bookModel.Author
+	FindByEmail(email string) bookModel.Book
+	FindById(id int) bookModel.Book
 }
