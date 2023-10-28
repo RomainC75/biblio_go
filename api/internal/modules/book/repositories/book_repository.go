@@ -1,9 +1,11 @@
 package repositories
 
 import (
+	"errors"
+	"fmt"
+
 	bookModel "gitub.com/RomainC75/biblio/internal/modules/book/models"
 	"gitub.com/RomainC75/biblio/pkg/database"
-
 	"gorm.io/gorm"
 )
 
@@ -36,12 +38,15 @@ func (BookRepository *BookRepository) FirstOrCreateAuthors(newAuthors []string) 
 	return authors
 }
 
-func (BookRepository *BookRepository) FindByEmail(email string) bookModel.Book {
-	var foundUser bookModel.Book
+func (BookRepository *BookRepository) FindByISBN(isbn string) (bookModel.Book, error) {
+	var foundBook bookModel.Book
 
-	BookRepository.DB.First(&foundUser, "email = ?", email)
-
-	return foundUser
+	result := BookRepository.DB.First(&foundBook, "ISBN = ?", isbn)
+	fmt.Println("AFFECTEDD : ", result.RowsAffected)
+	if result.RowsAffected == 0 {
+		return foundBook, errors.New("not found")
+	}
+	return foundBook, nil
 }
 
 func (BookRepository *BookRepository) FindById(id int) bookModel.Book {

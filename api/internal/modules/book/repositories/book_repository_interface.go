@@ -7,6 +7,6 @@ import (
 type BookRepositoryInterface interface {
 	Create(book bookModel.Book) bookModel.Book
 	FirstOrCreateAuthors(newAuthors []string) []bookModel.Author
-	FindByEmail(email string) bookModel.Book
+	FindByISBN(isbn string) (bookModel.Book, error)
 	FindById(id int) bookModel.Book
 }

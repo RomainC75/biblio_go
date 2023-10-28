@@ -23,7 +23,7 @@ type SearchResponse struct {
 // 	}
 // 	return BookModel.Book{
 // 		Title:   searchResponse.Docs[0].Title,
-// 		ISNB:    searchResponse.Q,
+// 		ISBN:    searchResponse.Q,
 // 		Authors: []*models.Author{
 // 			Name: searchResponse.Docs[0].Authors[0],
 // 		},
