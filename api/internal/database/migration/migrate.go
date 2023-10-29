@@ -12,7 +12,7 @@ import (
 
 func Migrate() {
 	db := database.Connection()
-	err := db.AutoMigrate(&userModels.User{}, &bookModels.Author{}, &bookModels.Book{})
+	err := db.AutoMigrate(&userModels.User{}, &bookModels.Author{}, &bookModels.Book{}, &bookModels.Title{})
 	// err := db.AutoMigrate(&userModels.User{}, &articleModels.Article{})
 
 	if err != nil {

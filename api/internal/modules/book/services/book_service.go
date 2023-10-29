@@ -21,7 +21,6 @@ func New() *BookService {
 }
 
 func (bookService *BookService) CreateFromSearchResponse(book responses.SearchResponse) (BookModel.Book, error) {
-
 	_, err := bookService.bookRepository.FindByISBN(book.Q)
 	if err == nil {
 		fmt.Printf("EEEEEERRRROOOOOOORRRRRR!!!!!!!!!!!!!!!!")
@@ -30,9 +29,19 @@ func (bookService *BookService) CreateFromSearchResponse(book responses.SearchRe
 
 	createdAuthors := bookService.bookRepository.FirstOrCreateAuthors(book.Docs[0].Authors)
 
+	// create Title !! 
+	BookModel.Title{
+		LanguageCode: 1,
+		TitleName: book.Docs[0].Title,
+	}//
+
 	newBook := BookModel.Book{
 		Authors: createdAuthors,
-		Title:   book.Docs[0].Title,
+		// Title:   book.Docs[0].Title,
+		Title:   []BookModel.Title{
+			// created Title
+		}
+
 		ISBN:    book.Q,
 	}
 	result := bookService.bookRepository.Create(newBook)
