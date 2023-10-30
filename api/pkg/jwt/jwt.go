@@ -6,6 +6,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	Responses "gitub.com/RomainC75/biblio/internal/modules/user/responses"
+	"gitub.com/RomainC75/biblio/pkg/configu"
 )
 
 type Claims struct {
@@ -18,9 +19,8 @@ type BasicUserInfo struct {
 	Email string
 }
 
-var secret = []byte("can-you-keep-a-secret?")
-
 func Generate(user Responses.User) (string, error) {
+	configs := configu.Get()
 
 	token := jwt.New(jwt.GetSigningMethod("HS256"))
 	exp := time.Now().Add(time.Hour * 24)
@@ -32,7 +32,7 @@ func Generate(user Responses.User) (string, error) {
 		},
 		user,
 	}
-	val, err := token.SignedString(secret)
+	val, err := token.SignedString([]byte(configs.Jwt.Secret))
 
 	if err != nil {
 		return "", err
