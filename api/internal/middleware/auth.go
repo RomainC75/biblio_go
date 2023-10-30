@@ -20,7 +20,7 @@ func IsAuth() gin.HandlerFunc {
 		// 	return
 		// }
 
-		fmt.Print("IsAuth middleware")
+		fmt.Print(">>>>>>>>>>>>>>>>>IsAuth middleware<<<<<<<<<<<<<<<<<<<")
 		c.Next()
 	}
 }

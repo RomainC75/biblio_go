@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"gitub.com/RomainC75/biblio/internal/modules/user/requests/auth"
 	UserService "gitub.com/RomainC75/biblio/internal/modules/user/services"
 	"gitub.com/RomainC75/biblio/pkg/errors"
 	"gitub.com/RomainC75/biblio/pkg/jwt"
+	"gitub.com/RomainC75/biblio/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -99,11 +101,17 @@ func (controller *Controller) HandleLogin(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": token})
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
-func (controller *Controller) HandleLogout(c *gin.Context) {
-	// sessions.Remove(c, "auth")
-	// c.Redirect(http.StatusFound, "/")
-	c.JSON(http.StatusOK, gin.H{"message": "register form"})
+func (controller *Controller) HandleTest(c *gin.Context) {
+	auth_header, ok := c.Request.Header["Authorization"]
+	utils.PrettyDisplay(auth_header)
+
+	if !ok || !strings.HasPrefix(auth_header[0], "Bearer") {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "token missing"})
+		return
+	}
+	utils.PrettyDisplay(auth_header)
+	c.JSON(http.StatusOK, gin.H{"message": "token well formed"})
 }
