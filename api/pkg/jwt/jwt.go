@@ -13,10 +13,6 @@ import (
 
 type Claims struct {
 	*jwt.RegisteredClaims
-	UserInfo interface{}
-}
-
-type BasicUserInfo struct {
 	ID    uint
 	Email string
 }
@@ -32,7 +28,8 @@ func Generate(user Responses.User) (string, error) {
 			ExpiresAt: jwt.NewNumericDate(exp),
 			Subject:   strconv.FormatUint(uint64(user.ID), 10),
 		},
-		user,
+		user.ID,
+		user.Email,
 	}
 	val, err := token.SignedString([]byte(secret))
 
