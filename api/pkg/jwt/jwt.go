@@ -8,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	Responses "gitub.com/RomainC75/biblio/internal/modules/user/responses"
 	"gitub.com/RomainC75/biblio/pkg/configu"
+	"gitub.com/RomainC75/biblio/pkg/utils"
 )
 
 type Claims struct {
@@ -47,12 +48,15 @@ func GetClaimsFromToken(tokenString string) (jwt.MapClaims, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return secret, nil
+		return []byte(secret), nil
 	})
 	if err != nil {
+		fmt.Println("ZERROR : ", err.Error())
 		return nil, err
 	}
+	utils.PrettyDisplay(token)
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		fmt.Println("claims : ", claims)
 		return claims, nil
 	}
 	return nil, err

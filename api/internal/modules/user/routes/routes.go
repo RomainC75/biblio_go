@@ -11,8 +11,8 @@ func Routes(router *gin.Engine) {
 
 	userController := userCtrl.New()
 
-	guestGroup := router.Group("/")
-	guestGroup.Use(middlewares.IsAuth())
+	guestGroup := router.Group("/auth")
+	// guestGroup.Use(middlewares.IsAuth())
 	{
 		guestGroup.POST("/register", userController.HandleRegister)
 
@@ -20,9 +20,9 @@ func Routes(router *gin.Engine) {
 	}
 
 	authGroup := router.Group("/")
-	authGroup.Use(middlewares.IsAuth())
+	authGroup.Use()
 	{
-		router.GET("/test", userController.HandleTest)
+		router.GET("/test", middlewares.IsAuth(), userController.HandleTest)
 	}
 
 }
