@@ -8,6 +8,7 @@ import (
 	"gitub.com/RomainC75/biblio/internal/modules/user/requests/auth"
 	UserService "gitub.com/RomainC75/biblio/internal/modules/user/services"
 	"gitub.com/RomainC75/biblio/pkg/errors"
+	"gitub.com/RomainC75/biblio/pkg/jwt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -75,48 +76,41 @@ func (controller *Controller) Login(c *gin.Context) {
 }
 
 func (controller *Controller) HandleLogin(c *gin.Context) {
-	// validate request
-	// var request auth.LoginRequest
-	// if err := c.ShouldBind(&request); err != nil {
-	// 	// see also ShouldBindJSON()
-	// 	errors.Init()
-	// 	errors.SetFromErrors(err)
-	// 	sessions.Set(c, "errors", converters.MapToString(errors.Get()))
 
-	// 	old.Init()
-	// 	old.Set(c)
-	// 	sessions.Set(c, "old", converters.UrlValuesToString(old.Get()))
+	var request auth.LoginRequest
+	if err := c.ShouldBind(&request); err != nil {
+		// see also ShouldBindJSON()
 
-	// 	c.Redirect(http.StatusFound, "/login")
-	// 	return
-	// }
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": err.Error()})
+		return
+	}
 
-	// user, err := controller.userService.HandleUserLogin(request)
-	// if err != nil {
-	// 	// see also ShouldBindJSON()
-	// 	errors.Init()
-	// 	errors.Add("email", err.Error())
-	// 	sessions.Set(c, "errors", converters.MapToString(errors.Get()))
+	user, err := controller.userService.HandleUserLogin(request)
+	if err != nil {
+		// see also ShouldBindJSON()
 
-	// 	old.Init()
-	// 	old.Set(c)
-	// 	sessions.Set(c, "old", converters.UrlValuesToString(old.Get()))
+		c.Redirect(http.StatusFound, "/login")
+		return
+	}
+	fmt.Println("found user : ", user)
 
-	// 	c.Redirect(http.StatusFound, "/login")
-	// 	return
-	// }
+	token, err := jwt.Generate(user)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
+	}
 
-	// sessions.Set(c, "auth", strconv.Itoa(int(user.ID)))
-
-	// //redirect to homepage
-	// log.Printf("user successfully logged with name %s \n", user.Name)
-	// c.Redirect(http.StatusFound, "/")
-
-	c.JSON(http.StatusOK, gin.H{"message": "register form"})
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
-func (controller *Controller) HandleLogout(c *gin.Context) {
-	// sessions.Remove(c, "auth")
-	// c.Redirect(http.StatusFound, "/")
-	c.JSON(http.StatusOK, gin.H{"message": "register form"})
+func (controller *Controller) HandleWhoAmI(c *gin.Context) {
+	id, exists := c.Get("user_id")
+	if exists {
+		data := map[string]interface{}{
+			"id": id,
+			"email": c.GetString("user_email"),
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"user": data,
+		})
+	}
 }

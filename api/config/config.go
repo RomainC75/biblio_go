@@ -4,6 +4,7 @@ type Config struct {
 	App    App
 	Server Server
 	DB     DB
+	Jwt    Jwt
 }
 
 type App struct {
@@ -21,4 +22,8 @@ type DB struct {
 	Host     string
 	Port     string
 	Name     string
+}
+
+type Jwt struct {
+	Secret string
 }

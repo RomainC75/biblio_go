@@ -1,26 +1,33 @@
 package middlewares
 
 import (
-	"fmt"
+	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"gitub.com/RomainC75/biblio/pkg/jwt"
+	"gitub.com/RomainC75/biblio/pkg/utils"
 )
 
 func IsAuth() gin.HandlerFunc {
-
-	// var userRepo = UserRepository.New()
-
 	return func(c *gin.Context) {
-		// userID, _ := strconv.Atoi(authID)
+		auth_header, ok := c.Request.Header["Authorization"]
+		if !ok || !strings.HasPrefix(auth_header[0], "Bearer") {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "token missing"})
+			c.Abort()
+			return
+		}
+		token := strings.Split(auth_header[0], " ")[1]
+		claim, err := jwt.GetClaimsFromToken(token)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "unauhorized"})
+			c.Abort()
+			return
+		}
+		utils.PrettyDisplay(claim)
 
-		// user := userRepo.FindById(userID)
-
-		// if user.ID == 0 {
-		// 	c.Redirect(http.StatusFound, "/login")
-		// 	return
-		// }
-
-		fmt.Print("IsAuth middleware")
+		c.Set("user_email", claim["Email"])
+		c.Set("user_id", claim["ID"])
 		c.Next()
 	}
 }

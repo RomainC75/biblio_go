@@ -10,21 +10,16 @@ import (
 func Routes(router *gin.Engine) {
 
 	userController := userCtrl.New()
-
-	guestGroup := router.Group("/")
-	guestGroup.Use(middlewares.IsAuth())
+	guestGroup := router.Group("/auth")
+	// guestGroup.Use(middlewares.IsAuth())
 	{
-		guestGroup.GET("/register", userController.Register)
 		guestGroup.POST("/register", userController.HandleRegister)
-
-		guestGroup.GET("/login", userController.Login)
 		guestGroup.POST("/login", userController.HandleLogin)
 	}
 
 	authGroup := router.Group("/")
-	authGroup.Use(middlewares.IsAuth())
+	authGroup.Use()
 	{
-		router.POST("/logout", userController.HandleLogout)
+		router.GET("/test", middlewares.IsAuth(), userController.HandleWhoAmI)
 	}
-
 }
