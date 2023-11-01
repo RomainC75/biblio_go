@@ -41,9 +41,7 @@ func (BookRepository *BookRepository) FirstOrCreateAuthors(newAuthors []string) 
 
 func (BookRepository *BookRepository) FindByISBN(isbn string) (bookModel.Book, error) {
 	var foundBook bookModel.Book
-
 	result := BookRepository.DB.First(&foundBook, "ISBN = ?", isbn)
-	fmt.Println("AFFECTEDD : ", result.RowsAffected)
 	if result.RowsAffected == 0 {
 		return foundBook, errors.New("not found")
 	}
@@ -51,9 +49,20 @@ func (BookRepository *BookRepository) FindByISBN(isbn string) (bookModel.Book, e
 }
 
 func (BookRepository *BookRepository) FindById(id int) bookModel.Book {
-	var foundUser bookModel.Book
-
-	BookRepository.DB.First(&foundUser, "id = ?", id)
-
-	return foundUser
+	var foundBook bookModel.Book
+	BookRepository.DB.First(&foundBook, "id = ?", id)
+	return foundBook
 }
+
+func (BookRepository *BookRepository) FindByUserID(userId string) []bookModel.Book {
+	var foundBooks []bookModel.Book
+	fmt.Printf("==> userID : ", userId)
+	result := BookRepository.DB.Where("user_refer = ?", userId).Find(&foundBooks)
+	if result.Error != nil {
+        fmt.Printf("Error: %s", result.Error)
+    }
+	// utils.PrettyDisplay(foundBooks)
+	fmt.Printf("RESULT : ", result.RowsAffected)
+	return foundBooks
+}
+

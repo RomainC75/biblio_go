@@ -24,6 +24,6 @@ func Routes(router *gin.Engine) {
 	apiController := apiCtrl.New()
 	router.GET("/search", apiController.Search)
 	router.POST("/book", middlewares.IsAuth(),apiController.CreateNewBook)
-	router.GET("/book", apiController.GetBooks)
+	router.GET("/book", middlewares.IsAuth(), apiController.GetBooks)
 
 }

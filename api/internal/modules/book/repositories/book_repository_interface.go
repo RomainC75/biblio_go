@@ -9,4 +9,5 @@ type BookRepositoryInterface interface {
 	FirstOrCreateAuthors(newAuthors []string) []bookModel.Author
 	FindByISBN(isbn string) (bookModel.Book, error)
 	FindById(id int) bookModel.Book
+	FindByUserID(userId string) []bookModel.Book
 }

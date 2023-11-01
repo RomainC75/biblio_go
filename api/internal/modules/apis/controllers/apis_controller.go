@@ -36,7 +36,7 @@ func (controller *Controller) Search(c *gin.Context) {
 		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": book})
+	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 }
 
 func (controller *Controller) CreateNewBook(c *gin.Context) {
@@ -56,5 +56,12 @@ func (controller *Controller) CreateNewBook(c *gin.Context) {
 }
 
 func (controller *Controller) GetBooks(c *gin.Context) {
-
+	userId, _ := c.Get("user_id")
+	if userIdStr, ok := userId.(string); ok {
+		foundBooks := controller.bookService.FindBooksByUserId(userIdStr)
+		c.JSON(http.StatusBadRequest, gin.H{"found books": foundBooks})
+		return 
+	}
+	c.JSON(http.StatusBadRequest, gin.H{"error": "error converting the user id"})
+		return 
 }

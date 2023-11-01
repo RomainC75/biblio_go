@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/google/uuid"
 	"gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/responses"
@@ -42,10 +41,7 @@ func (bookService *BookService) CreateFromSearchResponse(book responses.SearchRe
 }
 
 func (bookService *BookService) CreateBook(userId uuid.UUID, book BookRequest.CreateBookRequest) (BookModel.Book, error) {
-
-
 	createdAuthors := bookService.bookRepository.FirstOrCreateAuthors(book.Authors)
-	fmt.Println("===> received book : ")
 	utils.PrettyDisplay(book)
 	newBook := BookModel.Book{
 		Authors: createdAuthors,
@@ -55,13 +51,14 @@ func (bookService *BookService) CreateBook(userId uuid.UUID, book BookRequest.Cr
 		LanguageCode: book.LanguageCode,
 		UserRefer: userId,
 	}
-	fmt.Println("=====> new book before sql")
-	utils.PrettyDisplay(newBook)
 	result := bookService.bookRepository.Create(newBook)
 	
-
-
 	result.Authors=createdAuthors
 	// handle errors
 	return result, nil
+}
+
+func (bookService *BookService) FindBooksByUserId(userId string) []BookModel.Book {
+	foundBooks := bookService.bookRepository.FindByUserID(userId)
+	return foundBooks
 }
