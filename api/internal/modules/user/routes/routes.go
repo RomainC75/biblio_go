@@ -22,7 +22,7 @@ func Routes(router *gin.Engine) {
 	authGroup := router.Group("/")
 	authGroup.Use()
 	{
-		router.GET("/test", middlewares.IsAuth(), userController.HandleTest)
+		router.GET("/test", middlewares.IsAuth(), userController.HandleWhoAmI)
 	}
 
 }

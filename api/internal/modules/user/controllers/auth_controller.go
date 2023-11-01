@@ -102,8 +102,15 @@ func (controller *Controller) HandleLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
-func (controller *Controller) HandleTest(c *gin.Context) {
-	fmt.Println("-->HANDLE TEST")
-	fmt.Println("EMAIL : ", c.GetString("email"))
-	c.JSON(http.StatusOK, gin.H{"message": "token well formed"})
+func (controller *Controller) HandleWhoAmI(c *gin.Context) {
+	id, exists := c.Get("user_id")
+	if exists {
+		data := map[string]interface{}{
+			"id": id,
+			"email": c.GetString("user_email"),
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"user": data,
+		})
+	}
 }
