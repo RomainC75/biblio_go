@@ -23,6 +23,7 @@ func (BookRepository *BookRepository) Create(book bookModel.Book) bookModel.Book
 	var newBook bookModel.Book
 
 	BookRepository.DB.Create(&book).Scan(&newBook)
+	// BookRepository.DB.Model(&book).Association("Authors")
 	// BookRepository.DB.Save(&book)
 	return newBook
 }

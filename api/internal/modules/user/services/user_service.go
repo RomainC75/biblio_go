@@ -8,6 +8,7 @@ import (
 	UserRepository "gitub.com/RomainC75/biblio/internal/modules/user/repositories"
 	"gitub.com/RomainC75/biblio/internal/modules/user/requests/auth"
 	UserResponse "gitub.com/RomainC75/biblio/internal/modules/user/responses"
+	"gitub.com/RomainC75/biblio/pkg/utils"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -36,7 +37,7 @@ func (userService *UserService) Create(request auth.RegisterRequest) (UserRespon
 
 	newUser := userService.userRepository.Create(user)
 	fmt.Print("---->", newUser)
-	if newUser.ID == 0 {
+	if newUser.ID == utils.InitUUID() {
 		return response, errors.New("error creating the user")
 	}
 	return UserResponse.ToUser(newUser), nil
@@ -44,14 +45,14 @@ func (userService *UserService) Create(request auth.RegisterRequest) (UserRespon
 
 func (userService *UserService) CheckIfUserExists(email string) bool {
 	user := userService.userRepository.FindByEmail(email)
-	return user.ID != 0
+	return user.ID != utils.InitUUID()
 }
 
 func (userService *UserService) HandleUserLogin(request auth.LoginRequest) (UserResponse.User, error) {
 	var response UserResponse.User
 	existUser := userService.userRepository.FindByEmail(request.Email)
 
-	if existUser.ID == 0 {
+	if existUser.ID == utils.InitUUID() {
 		return response, errors.New("Invalid Credentials !")
 	}
 

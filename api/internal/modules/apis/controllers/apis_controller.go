@@ -6,6 +6,7 @@ import (
 
 	// UserService "gitub.com/RomainC75/biblio/internal/modules/user/services"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	OpenLibraryService "gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/services"
 	BookRequest "gitub.com/RomainC75/biblio/internal/modules/book/requests"
 	BookService "gitub.com/RomainC75/biblio/internal/modules/book/services"
@@ -46,10 +47,12 @@ func (controller *Controller) CreateNewBook(c *gin.Context) {
 
 	Utils.PrettyDisplay(request)
 
-	book, _ := controller.bookService.CreateBook(request)
+	userId, _ := c.Get("user_id")
+	userUuid, _ := uuid.Parse(userId.(string))
+
+	book, _ := controller.bookService.CreateBook(userUuid, request)
 
 	c.JSON(http.StatusBadGateway, gin.H{"message": book})
-
 }
 
 func (controller *Controller) GetBooks(c *gin.Context) {

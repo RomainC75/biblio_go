@@ -4,10 +4,12 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/google/uuid"
 	"gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/responses"
 	BookModel "gitub.com/RomainC75/biblio/internal/modules/book/models"
 	BookRepository "gitub.com/RomainC75/biblio/internal/modules/book/repositories"
 	BookRequest "gitub.com/RomainC75/biblio/internal/modules/book/requests"
+	"gitub.com/RomainC75/biblio/pkg/utils"
 )
 
 type BookService struct {
@@ -23,25 +25,14 @@ func New() *BookService {
 func (bookService *BookService) CreateFromSearchResponse(book responses.SearchResponse) (BookModel.Book, error) {
 	_, err := bookService.bookRepository.FindByISBN(book.Q)
 	if err == nil {
-		fmt.Printf("EEEEEERRRROOOOOOORRRRRR!!!!!!!!!!!!!!!!")
 		return BookModel.Book{}, errors.New("isbn already in DB")
 	}
 
 	createdAuthors := bookService.bookRepository.FirstOrCreateAuthors(book.Docs[0].Authors)
 
-	// create Title !! 
-	BookModel.Title{
-		LanguageCode: 1,
-		TitleName: book.Docs[0].Title,
-	}//
-
 	newBook := BookModel.Book{
 		Authors: createdAuthors,
-		// Title:   book.Docs[0].Title,
-		Title:   []BookModel.Title{
-			// created Title
-		}
-
+		Title:   book.Docs[0].Title,
 		ISBN:    book.Q,
 	}
 	result := bookService.bookRepository.Create(newBook)
@@ -50,16 +41,27 @@ func (bookService *BookService) CreateFromSearchResponse(book responses.SearchRe
 	return result, nil
 }
 
-func (bookService *BookService) CreateBook(book BookRequest.CreateBookRequest) (BookModel.Book, error) {
-	createdAuthors := bookService.bookRepository.FirstOrCreateAuthors(book.Authors)
+func (bookService *BookService) CreateBook(userId uuid.UUID, book BookRequest.CreateBookRequest) (BookModel.Book, error) {
 
+
+	createdAuthors := bookService.bookRepository.FirstOrCreateAuthors(book.Authors)
+	fmt.Println("===> received book : ")
+	utils.PrettyDisplay(book)
 	newBook := BookModel.Book{
 		Authors: createdAuthors,
 		Title:   book.Title,
 		ISBN:    book.ISBN,
-		Genre:   book.Genre,
+		GenreCode:   book.GenreCode,
+		LanguageCode: book.LanguageCode,
+		UserRefer: userId,
 	}
+	fmt.Println("=====> new book before sql")
+	utils.PrettyDisplay(newBook)
 	result := bookService.bookRepository.Create(newBook)
+	
+
+
+	result.Authors=createdAuthors
 	// handle errors
 	return result, nil
 }

@@ -2,10 +2,10 @@ package jwt
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 	Responses "gitub.com/RomainC75/biblio/internal/modules/user/responses"
 	"gitub.com/RomainC75/biblio/pkg/configu"
 	"gitub.com/RomainC75/biblio/pkg/utils"
@@ -13,7 +13,7 @@ import (
 
 type Claims struct {
 	*jwt.RegisteredClaims
-	ID    uint
+	ID    uuid.UUID
 	Email string
 }
 
@@ -26,7 +26,7 @@ func Generate(user Responses.User) (string, error) {
 	token.Claims = &Claims{
 		&jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(exp),
-			Subject:   strconv.FormatUint(uint64(user.ID), 10),
+			Subject:   user.ID.String(),
 		},
 		user.ID,
 		user.Email,

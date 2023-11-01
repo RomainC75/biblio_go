@@ -3,11 +3,12 @@ package responses
 import (
 	"fmt"
 
+	"github.com/google/uuid"
 	userModel "gitub.com/RomainC75/biblio/internal/modules/user/models"
 )
 
 type User struct {
-	ID    uint
+	ID    uuid.UUID
 	Image string
 	Name  string
 	Email string
