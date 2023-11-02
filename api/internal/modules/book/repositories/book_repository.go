@@ -81,3 +81,18 @@ func (BookRepository *BookRepository) DeleteBookById(bookId string) (bookModel.B
     }
 	return deletedBook, nil
 }
+
+func (BookRepository *BookRepository) UpdateBookById(book bookModel.Book) (bookModel.Book, error){
+	var newBook bookModel.Book
+
+	if err := BookRepository.DB.First(&newBook, "id = ?", book.ID).Error; err != nil {
+        if errors.Is(err, gorm.ErrRecordNotFound) {
+            return bookModel.Book{}, errors.New("Book not found")
+        }
+    }
+
+	if err := BookRepository.DB.Model(&newBook).Updates(book).Error; err != nil {
+        return bookModel.Book{}, errors.New("problem on update")
+    }
+	return newBook, nil
+}

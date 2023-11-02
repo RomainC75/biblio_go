@@ -26,5 +26,6 @@ func Routes(router *gin.Engine) {
 	router.POST("/book", middlewares.IsAuth(),apiController.CreateNewBook)
 	router.GET("/book", middlewares.IsAuth(), apiController.GetBooks)
 	router.DELETE("/book/:bookId", middlewares.IsAuth(), apiController.DeleteBook)
-	
+	router.PUT("/book/:bookId", middlewares.IsAuth(), apiController.UpdateBook)
+
 }

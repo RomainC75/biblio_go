@@ -76,3 +76,17 @@ func (bookService *BookService) DeleteBook(userId string, bookId string) (BookMo
 	}
 	return deletedBook, nil
 }
+
+func (bookService *BookService) UpdateBook(userId string, book BookModel.Book ) (BookModel.Book, error){
+	foundBook, err := bookService.bookRepository.FindById(book.ID.String())
+	if err != nil {
+		return BookModel.Book{}, err
+	}else if foundBook.UserRefer.String() != userId  {
+		return BookModel.Book{}, errors.New(fmt.Sprintf("unauthorized to delete the book : ", book.ID.String()))
+	}
+	updatedBook, err := bookService.bookRepository.UpdateBookById(book)
+	if err != nil {
+		return BookModel.Book{}, err
+	}
+	return updatedBook, nil
+}

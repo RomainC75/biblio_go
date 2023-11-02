@@ -14,6 +14,7 @@ type BookServiceInterface interface {
 	CreateBook(uuid.UUID, BookRequest.CreateBookRequest) (BookModel.Book, error)
 	FindBooksByUserId(userId string) ([]BookModel.Book)
 	DeleteBook(userId string, bookId string) (BookModel.Book, error)
+	UpdateBook(userId string, book BookModel.Book ) (BookModel.Book, error)
 	// CheckIfUserExists(email string) bool
 	// HandleUserLogin(request auth.LoginRequest) (UserResponse.User, error)
 }

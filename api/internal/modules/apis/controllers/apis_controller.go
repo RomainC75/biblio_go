@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	OpenLibraryService "gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/services"
+	BookModel "gitub.com/RomainC75/biblio/internal/modules/book/models"
 	BookRequest "gitub.com/RomainC75/biblio/internal/modules/book/requests"
 	BookService "gitub.com/RomainC75/biblio/internal/modules/book/services"
 	Utils "gitub.com/RomainC75/biblio/pkg/utils"
@@ -71,6 +72,28 @@ func (controller *Controller) DeleteBook(c *gin.Context) {
 	userIdStr, _ := userId.(string)
 	bookId := c.Param("bookId")
 	erasedBook, err := controller.bookService.DeleteBook(userIdStr, bookId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return 
+	}
+	c.JSON(http.StatusAccepted, gin.H{"erased book": erasedBook})
+}
+
+func (controller *Controller) UpdateBook(c *gin.Context) {
+	userId, _ := c.Get("user_id")
+	userIdStr, _ := userId.(string)
+	// bookId := c.Param("bookId")
+	
+	var book BookModel.Book
+	if err := c.ShouldBind(&book); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	Utils.PrettyDisplay(book)
+
+
+	
+	erasedBook, err := controller.bookService.UpdateBook(userIdStr, book)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return 
