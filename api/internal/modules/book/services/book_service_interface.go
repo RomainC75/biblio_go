@@ -13,6 +13,7 @@ type BookServiceInterface interface {
 	CreateFromSearchResponse(book responses.SearchResponse) (BookModel.Book, error)
 	CreateBook(uuid.UUID, BookRequest.CreateBookRequest) (BookModel.Book, error)
 	FindBooksByUserId(userId string) ([]BookModel.Book)
+	DeleteBook(userId string, bookId string) (BookModel.Book, error)
 	// CheckIfUserExists(email string) bool
 	// HandleUserLogin(request auth.LoginRequest) (UserResponse.User, error)
 }

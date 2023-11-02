@@ -65,3 +65,15 @@ func (controller *Controller) GetBooks(c *gin.Context) {
 	c.JSON(http.StatusBadRequest, gin.H{"error": "error converting the user id"})
 		return 
 }
+
+func (controller *Controller) DeleteBook(c *gin.Context) {
+	userId, _ := c.Get("user_id")
+	userIdStr, _ := userId.(string)
+	bookId := c.Param("bookId")
+	erasedBook, err := controller.bookService.DeleteBook(userIdStr, bookId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return 
+	}
+	c.JSON(http.StatusAccepted, gin.H{"erased book": erasedBook})
+}

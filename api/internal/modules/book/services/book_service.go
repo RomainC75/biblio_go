@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/google/uuid"
 	"gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/responses"
@@ -54,11 +55,24 @@ func (bookService *BookService) CreateBook(userId uuid.UUID, book BookRequest.Cr
 	result := bookService.bookRepository.Create(newBook)
 	
 	result.Authors=createdAuthors
-	// handle errors
 	return result, nil
 }
 
 func (bookService *BookService) FindBooksByUserId(userId string) []BookModel.Book {
 	foundBooks := bookService.bookRepository.FindByUserID(userId)
 	return foundBooks
+}
+
+func (bookService *BookService) DeleteBook(userId string, bookId string) (BookModel.Book, error){
+	foundBook, err := bookService.bookRepository.FindById(bookId)
+	if err != nil {
+		return BookModel.Book{}, err
+	}else if foundBook.UserRefer.String() != userId  {
+		return BookModel.Book{}, errors.New(fmt.Sprintf("unauthorized to delete the book : ", bookId))
+	}
+	deletedBook, err := bookService.bookRepository.DeleteBookById(bookId)
+	if err != nil {
+		return BookModel.Book{}, err
+	}
+	return deletedBook, nil
 }
