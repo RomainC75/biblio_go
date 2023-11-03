@@ -45,16 +45,16 @@ func (bookService *BookService) CreateBook(userId uuid.UUID, book BookRequest.Cr
 	createdAuthors := bookService.bookRepository.FirstOrCreateAuthors(book.Authors)
 	utils.PrettyDisplay(book)
 	newBook := BookModel.Book{
-		Authors: createdAuthors,
-		Title:   book.Title,
-		ISBN:    book.ISBN,
-		GenreCode:   book.GenreCode,
+		Authors:      createdAuthors,
+		Title:        book.Title,
+		ISBN:         book.ISBN,
+		GenreCode:    book.GenreCode,
 		LanguageCode: book.LanguageCode,
-		UserRefer: userId,
+		UserRefer:    userId,
 	}
 	result := bookService.bookRepository.Create(newBook)
-	
-	result.Authors=createdAuthors
+
+	result.Authors = createdAuthors
 	return result, nil
 }
 
@@ -63,11 +63,11 @@ func (bookService *BookService) FindBooksByUserId(userId string) []BookModel.Boo
 	return foundBooks
 }
 
-func (bookService *BookService) DeleteBook(userId string, bookId string) (BookModel.Book, error){
+func (bookService *BookService) DeleteBook(userId string, bookId string) (BookModel.Book, error) {
 	foundBook, err := bookService.bookRepository.FindById(bookId)
 	if err != nil {
 		return BookModel.Book{}, err
-	}else if foundBook.UserRefer.String() != userId  {
+	} else if foundBook.UserRefer.String() != userId {
 		return BookModel.Book{}, errors.New(fmt.Sprintf("unauthorized to delete the book : ", bookId))
 	}
 	deletedBook, err := bookService.bookRepository.DeleteBookById(bookId)
@@ -77,11 +77,11 @@ func (bookService *BookService) DeleteBook(userId string, bookId string) (BookMo
 	return deletedBook, nil
 }
 
-func (bookService *BookService) UpdateBook(userId string, book BookModel.Book ) (BookModel.Book, error){
+func (bookService *BookService) UpdateBook(userId string, book BookModel.Book) (BookModel.Book, error) {
 	foundBook, err := bookService.bookRepository.FindById(book.ID.String())
 	if err != nil {
 		return BookModel.Book{}, err
-	}else if foundBook.UserRefer.String() != userId  {
+	} else if foundBook.UserRefer.String() != userId {
 		return BookModel.Book{}, errors.New(fmt.Sprintf("unauthorized to delete the book : ", book.ID.String()))
 	}
 	updatedBook, err := bookService.bookRepository.UpdateBookById(book)
@@ -89,4 +89,8 @@ func (bookService *BookService) UpdateBook(userId string, book BookModel.Book ) 
 		return BookModel.Book{}, err
 	}
 	return updatedBook, nil
+}
+
+func (bookService *BookService) UpdateAuthors(authors []BookModel.Author) ([]BookModel.Author, error) {
+
 }
