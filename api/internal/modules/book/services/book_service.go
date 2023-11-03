@@ -91,6 +91,7 @@ func (bookService *BookService) UpdateBook(userId string, book BookModel.Book) (
 	return updatedBook, nil
 }
 
-func (bookService *BookService) UpdateAuthors(authors []BookModel.Author) ([]BookModel.Author, error) {
-
+func (bookService *BookService) UpdateAuthorsSrv(authors []BookModel.Author) ([]BookModel.Author, error) {
+	updatedAuthors, _ := bookService.bookRepository.UpdateAuthors(authors)
+	return updatedAuthors, nil
 }

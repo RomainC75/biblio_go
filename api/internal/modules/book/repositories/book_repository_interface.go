@@ -11,5 +11,7 @@ type BookRepositoryInterface interface {
 	FindById(id string) (bookModel.Book, error)
 	FindByUserID(userId string) []bookModel.Book
 	DeleteBookById(userId string) (bookModel.Book, error)
-	UpdateBookById(userId bookModel.Book) (bookModel.Book, error)
+	UpdateBookById(book bookModel.Book) (bookModel.Book, error)
+
+	UpdateAuthors(authors []bookModel.Author) ([]bookModel.Author, error)
 }
