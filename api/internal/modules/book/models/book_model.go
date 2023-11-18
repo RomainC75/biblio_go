@@ -29,11 +29,11 @@ type Book struct {
 
 	// manyToOne
 	EditorRef uint // manyToOne
-	Links []Link `gorm:"foreignKey:Book.Ref"`
+	Links []Link `gorm:"foreignKey:BookRef"`
 	// manyToMany
 	Languages []Language `gorm:"many2many:book_language;"`
 	Genres []Genre `gorm:"many2many:book_genre;"`
-	Authors []Genre `gorm:"many2many:book_author;"`
+	Authors []Author `gorm:"many2many:book_author;"`
 }
 
 // One to Many

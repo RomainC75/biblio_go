@@ -1,7 +1,11 @@
 package services
 
 import (
+	"github.com/google/uuid"
+	"gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/responses"
+	BookModel "gitub.com/RomainC75/biblio/internal/modules/book/models"
 	BookRepository "gitub.com/RomainC75/biblio/internal/modules/book/repositories"
+	BookRequest "gitub.com/RomainC75/biblio/internal/modules/book/requests"
 )
 
 type BookService struct {
@@ -14,7 +18,7 @@ func New() *BookService {
 	}
 }
 
-// func (bookService *BookService) CreateFromSearchResponse(book responses.SearchResponse) (BookModel.Book, error) {
+func (bookService *BookService) CreateFromSearchResponse(book responses.SearchResponse) (BookModel.Book, error) {
 // 	_, err := bookService.bookRepository.FindByISBN(book.Q)
 // 	if err == nil {
 // 		return BookModel.Book{}, errors.New("isbn already in DB")
@@ -31,9 +35,10 @@ func New() *BookService {
 // 	result.Authors = createdAuthors
 
 // 	return result, nil
-// }
+	return BookModel.Book{}, nil
+}
 
-// func (bookService *BookService) CreateBook(userId uuid.UUID, book BookRequest.CreateBookRequest) (BookModel.Book, error) {
+func (bookService *BookService) CreateBook(userId uuid.UUID, book BookRequest.CreateBookRequest) (BookModel.Book, error) {
 // 	createdAuthors := bookService.bookRepository.FirstOrCreateAuthors(book.Authors)
 // 	utils.PrettyDisplay(book)
 // 	newBook := BookModel.Book{
@@ -48,9 +53,10 @@ func New() *BookService {
 
 // 	result.Authors = createdAuthors
 // 	return result, nil
-// }
+	return BookModel.Book{}, nil
+}
 
-// func (bookService *BookService) FindBooksByUserId(userId string) []BookModel.Book {
+func (bookService *BookService) FindBooksByUserId(userId string) []BookModel.Book {
 // 	foundBooks := bookService.bookRepository.FindByUserID(userId)
 // 	return foundBooks
 // }
@@ -67,9 +73,10 @@ func New() *BookService {
 // 		return BookModel.Book{}, err
 // 	}
 // 	return deletedBook, nil
-// }
+return []BookModel.Book{}
+}
 
-// func (bookService *BookService) UpdateBook(userId string, book BookModel.Book) (BookModel.Book, error) {
+func (bookService *BookService) UpdateBook(userId string, book BookModel.Book) (BookModel.Book, error) {
 // 	foundBook, err := bookService.bookRepository.FindById(book.ID.String())
 // 	if err != nil {
 // 		return BookModel.Book{}, err
@@ -81,9 +88,11 @@ func New() *BookService {
 // 		return BookModel.Book{}, err
 // 	}
 // 	return updatedBook, nil
-// }
+return BookModel.Book{}, nil
+}
 
-// func (bookService *BookService) UpdateAuthorsSrv(authors []BookModel.Author) ([]BookModel.Author, error) {
+func (bookService *BookService) UpdateAuthorsSrv(authors []BookModel.Author) ([]BookModel.Author, error) {
 // 	updatedAuthors, _ := bookService.bookRepository.UpdateAuthors(authors)
 // 	return updatedAuthors, nil
-// }
+return []BookModel.Author{}, nil
+}

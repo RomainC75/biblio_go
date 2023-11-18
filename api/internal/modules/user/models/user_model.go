@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/google/uuid"
-	bookModels "gitub.com/RomainC75/biblio/internal/modules/book/models"
 	"gorm.io/gorm"
 )
 
@@ -14,5 +13,4 @@ type User struct {
 	Password string    `gorm:"varchar:191"`
 	Firstname string	`gorm:"varchar:191"`
   	Lastname string `gorm:"varchar:191"`
-	Books	[]*bookModels.Book	`gorm:"foreignKey:UserRefer"`
 }
