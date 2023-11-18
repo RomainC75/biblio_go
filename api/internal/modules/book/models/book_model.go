@@ -1,35 +1,71 @@
 package models
 
 import (
-	"github.com/google/uuid"
+	"time"
+
 	"gorm.io/gorm"
 )
 
 type Book struct {
 	gorm.Model
 	// -> ID, CreatedAt, UpdatedAt, DeletedAt
-	ID        uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
-	Title string `gorm:"foreignKey:BookRefer"`
-	ISBN      string    `gorm:"varchar:191;"`
-	Authors   []Author  `gorm:"many2many:book_author;"`
-	LanguageCode LanguageCode
-	GenreCode GenreCode `form:"genre_code"`
-	UserRefer	uuid.UUID
+	Isbn10      string    `gorm:"varchar:191;"`
+	Isbn13      string    `gorm:"varchar:191;"`
+
+	Title string `gorm:"varchar:191;"`
+	Description string `gorm:"varchar:191;"`
+	ReleaseDate time.Time `gorm:"type:date"`
+
+	SeriesNumber int // 0 if not part of a series
+	MaxSeriesNumber int // 0 if not finished
+
+	IsPersoEdited bool // case : personnal data
+
+	WeightG uint
+	DimensionX float64
+	DimensionY float64
+	DimensionZ float64
+	PageNumber int
+
+	// manyToOne
+	EditorRef uint // manyToOne
+	Links []Link `gorm:"foreignKey:Book.Ref"`
+	// manyToMany
+	Languages []Language `gorm:"many2many:book_language;"`
+	Genres []Genre `gorm:"many2many:book_genre;"`
+	Authors []Genre `gorm:"many2many:book_author;"`
 }
 
-type GenreCode int
+// One to Many
+type Editor struct {
+	gorm.Model
+  	Name string 	`gorm:"varchar:191;"`
+	Books []Book `gorm:"foreignKey:EditorRef"`
+}
 
-const (
-	ScienceFiction = iota
-	Fantastic
-	Love
-)
+type Link struct {
+	gorm.Model
+  	Url string 	`gorm:"varchar:300;"`
+	BookRef uint 
+}
 
-type LanguageCode int
+// Many To Many
 
-const (
-	English = iota
-	French
-	Deutsch
-	Japanese
-)
+type Language struct {
+	gorm.Model
+  	Name string 	`gorm:"varchar:191;"`
+	Books []Book   `gorm:"many2many:book_language;"`
+}
+
+type Genre struct {
+	gorm.Model
+  	Name string 	`gorm:"varchar:191;"`
+	Books []Book   `gorm:"many2many:book_genre;"`
+}
+
+
+type Author struct {
+	gorm.Model
+  	Name string 	`gorm:"varchar:191;"`
+	Books []Book   `gorm:"many2many:book_author;"`
+}

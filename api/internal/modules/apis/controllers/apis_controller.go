@@ -90,9 +90,6 @@ func (controller *Controller) UpdateBook(c *gin.Context) {
 	}
 
 	Utils.PrettyDisplay(book)
-
-	updatedAuthors, err := controller.bookService.UpdateAuthorsSrv(book.Authors)
-	Utils.PrettyDisplay(updatedAuthors)
 	
 	erasedBook, err := controller.bookService.UpdateBook(userIdStr, book)
 	if err != nil {

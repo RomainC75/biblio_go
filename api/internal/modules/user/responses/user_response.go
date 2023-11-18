@@ -10,7 +10,8 @@ import (
 type User struct {
 	ID    uuid.UUID
 	Image string
-	Name  string
+	Firstname  string
+	Lastname  string
 	Email string
 }
 
@@ -21,8 +22,9 @@ type Users struct {
 func ToUser(user userModel.User) User {
 	return User{
 		ID:    user.ID,
-		Name:  user.Name,
+		Firstname:  user.Firstname,
+		Lastname:  user.Lastname,
 		Email: user.Email,
-		Image: fmt.Sprintf("https://ui-avatars.com/api/?name=%s", user.Name),
+		Image: fmt.Sprintf("https://ui-avatars.com/api/?name=%s", user.Firstname),
 	}
 }
