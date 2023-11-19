@@ -6,7 +6,7 @@ type FoundBook struct {
 	Title   string   `json:"title"`
 }
 
-type SearchResponse struct {
+type SearchResponseStandard struct {
 	Docs          []FoundBook `json:"docs"`
 	NumFound      int         `json:"numFound"`
 	NumFoundExact bool        `json:"numFoundExact"`
@@ -15,6 +15,8 @@ type SearchResponse struct {
 	Q             string      `json:"q"`
 	Start         int         `json:"start"`
 }
+
+
 
 // func ToBookModel(searchResponse SearchResponse, Authors ) (BookModel.Book, error) {
 // 	if len(searchResponse.Docs == 0) {

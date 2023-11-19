@@ -8,11 +8,47 @@ import (
 	"net/url"
 
 	"github.com/gocolly/colly/v2"
-	"gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/responses"
+	responses "gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/responses"
+	"gitub.com/RomainC75/biblio/pkg/utils"
 )
 
+// isbn : 10/13
+func SearchByReqDetails(queryStr string) (responses.SearchResponseDetails, error) {
+	baseURL := "https://openlibrary.org/"
+	resource := "/api/books"
+	params := url.Values{}
+	params.Add("bibkeys", queryStr)
+	params.Add("jscmd", "details")
+	params.Add("format", "json")
+	
 
-func SearchByReq(queryStr string) (responses.SearchResponse, error) {
+	u, _ := url.ParseRequestURI(baseURL)
+	u.Path = resource
+	u.RawQuery = params.Encode()
+	urlStr := fmt.Sprintf("%v", u)
+	fmt.Println("-> ", u)
+	fmt.Println("-> ", urlStr)
+	resp, err := http.Get(urlStr)
+
+	if err != nil {
+		return responses.SearchResponseDetails{}, err
+	}
+	defer resp.Body.Close()
+	fmt.Println("CODE : ", resp.StatusCode)
+	decoder := json.NewDecoder(resp.Body)
+	var response responses.SearchResponseDetails
+	err = decoder.Decode(&response)
+
+	if err != nil {
+		return responses.SearchResponseDetails{}, err
+	}
+	fmt.Println("===================")
+	utils.PrettyDisplay(response)
+	// fmt.Println("-----> RESP : ", resp.Body)
+	return response, nil
+}
+
+func SearchByReqStandard(queryStr string) (responses.SearchResponseStandard, error) {
 	baseURL := "https://openlibrary.org/"
 	resource := "/search.json"
 	params := url.Values{}
@@ -31,16 +67,16 @@ func SearchByReq(queryStr string) (responses.SearchResponse, error) {
 	resp, err := http.Get(urlStr)
 
 	if err != nil {
-		return responses.SearchResponse{}, err
+		return responses.SearchResponseStandard{}, err
 	}
 	defer resp.Body.Close()
 
 	decoder := json.NewDecoder(resp.Body)
-	var response responses.SearchResponse
+	var response responses.SearchResponseStandard
 	err = decoder.Decode(&response)
 
 	if err != nil {
-		return responses.SearchResponse{}, err
+		return responses.SearchResponseStandard{}, err
 	}
 	fmt.Println("--->", response)
 	// fmt.Println("-----> RESP : ", resp.Body)

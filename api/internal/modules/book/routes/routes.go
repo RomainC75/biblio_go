@@ -9,7 +9,7 @@ import (
 func Routes(router *gin.Engine) {
 
 	userController := bookCtrl.New()
-	guestGroup := router.Group("/book")
+	guestGroup := router.Group("/books")
 	// guestGroup.Use(middlewares.IsAuth())
 	{
 		// guestGroup.POST("/register", userController.HandleRegister)

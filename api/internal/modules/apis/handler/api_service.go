@@ -8,7 +8,7 @@ import (
 
 
 func SearchInApis(Isbn string)  {
-	res, err := openLibraryHelper.SearchByReq(Isbn)
+	res, err := openLibraryHelper.SearchByReqDetails(Isbn)
 	if err != nil {
 		fmt.Println("ERRROR : ", err.Error())
 	}

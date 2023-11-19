@@ -25,7 +25,7 @@ type Book struct {
 	DimensionX float64
 	DimensionY float64
 	DimensionZ float64
-	PageNumber int
+	NumberOfPages int
 
 	// manyToOne
 	EditorRef uint // manyToOne
