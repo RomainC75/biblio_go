@@ -15,40 +15,47 @@ import (
 
 var apiURL = "https://www.googleapis.com/"
 
+type SearchGoogleBookChan struct {
+	Response responses.GoogleApiResponse
+	Err error
+}
+
 // isbn : 10/13
-func SearchGoogleBook(queryStr string) (responses.GoogleApiResponse, error) {
-	resource := "/books/v1/volumes"
-	params := url.Values{}
-	params.Add("q", queryStr)
-	secret := configu.Get().Google.Key
-	params.Add("key", secret)
-	
-	
+func SearchGoogleBook(queryStr string, out chan SearchGoogleBookChan) {
+	go func(){
+		resource := "/books/v1/volumes"
+		params := url.Values{}
+		params.Add("q", queryStr)
+		secret := configu.Get().Google.Key
+		params.Add("key", secret)
+		
+		
 
-	u, _ := url.ParseRequestURI(apiURL)
-	u.Path = resource
-	u.RawQuery = params.Encode()
-	urlStr := fmt.Sprintf("%v", u)
-	fmt.Println("-> ", u)
-	fmt.Println("-> ", urlStr)
-	resp, err := http.Get(urlStr)
+		u, _ := url.ParseRequestURI(apiURL)
+		u.Path = resource
+		u.RawQuery = params.Encode()
+		urlStr := fmt.Sprintf("%v", u)
+		fmt.Println("-> ", u)
+		fmt.Println("-> ", urlStr)
+		resp, err := http.Get(urlStr)
 
-	if err != nil {
-		return responses.GoogleApiResponse{}, err
-	}
-	defer resp.Body.Close()
-	fmt.Println("CODE : ", resp.StatusCode)
-	decoder := json.NewDecoder(resp.Body)
-	var response responses.GoogleApiResponse
-	err = decoder.Decode(&response)
+		if err != nil {
+			out <- SearchGoogleBookChan{responses.GoogleApiResponse{}, err}
+		}
+		defer resp.Body.Close()
+		fmt.Println("CODE : ", resp.StatusCode)
+		decoder := json.NewDecoder(resp.Body)
+		var response responses.GoogleApiResponse
+		err = decoder.Decode(&response)
 
-	if err != nil {
-		return responses.GoogleApiResponse{}, err
-	}
-	fmt.Println("===================")
-	utils.PrettyDisplay(response)
-	// fmt.Println("-----> RESP : ", resp.Body)
-	return response, nil
+		if err != nil {
+			out <- SearchGoogleBookChan{responses.GoogleApiResponse{}, err}
+		}
+		fmt.Println("===================")
+		utils.PrettyDisplay(response)
+		// fmt.Println("-----> RESP : ", resp.Body)
+		out <- SearchGoogleBookChan{response, nil}
+	}()
 }
 
 func SearchByReqStandard(queryStr string) (responses.GoogleApiResponse, error) {
