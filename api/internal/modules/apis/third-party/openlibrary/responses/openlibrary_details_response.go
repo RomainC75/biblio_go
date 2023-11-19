@@ -1,21 +1,20 @@
 package responses
 
-type FoundBook struct {
-	Authors []string `json:"author_name"`
-	Key     string   `json:"key"`
-	Title   string   `json:"title"`
+type DetailsPart struct {
+	Title string `json:"title"`
+	Publisher []string `json:"publishers"`
+	ReleaseStrDate string `json:"publish_date"`
+	Dimensions string  `json:"physical_dimensions"`
+	Weight string `json:"weight"`
+	NumberOfPages int `json:"number_of_pages"`
 }
 
-type SearchResponseStandard struct {
-	Docs          []FoundBook `json:"docs"`
-	NumFound      int         `json:"numFound"`
-	NumFoundExact bool        `json:"numFoundExact"`
-	Num_found     int         `json:"num_found"`
-	Offset        any         `json:"offset"`
-	Q             string      `json:"q"`
-	Start         int         `json:"start"`
+type Root struct {
+	ThumbnailUrl  string `json:"thumbnail_url"`
+	Details DetailsPart `json:"details"`
 }
 
+type SearchResponseDetails map[string]Root
 
 
 // func ToBookModel(searchResponse SearchResponse, Authors ) (BookModel.Book, error) {

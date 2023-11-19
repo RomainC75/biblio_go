@@ -2,7 +2,7 @@ package services
 
 import (
 	"github.com/google/uuid"
-	"gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/responses"
+	"gitub.com/RomainC75/biblio/internal/modules/apis/third-party/openlibrary/responses"
 	BookModel "gitub.com/RomainC75/biblio/internal/modules/book/models"
 	BookRepository "gitub.com/RomainC75/biblio/internal/modules/book/repositories"
 	BookRequest "gitub.com/RomainC75/biblio/internal/modules/book/requests"
@@ -18,7 +18,7 @@ func New() *BookService {
 	}
 }
 
-func (bookService *BookService) CreateFromSearchResponse(book responses.SearchResponse) (BookModel.Book, error) {
+func (bookService *BookService) CreateFromSearchResponse(book responses.SearchResponseData) (BookModel.Book, error) {
 // 	_, err := bookService.bookRepository.FindByISBN(book.Q)
 // 	if err == nil {
 // 		return BookModel.Book{}, errors.New("isbn already in DB")

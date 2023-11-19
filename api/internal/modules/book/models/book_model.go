@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
@@ -14,7 +12,7 @@ type Book struct {
 
 	Title string `gorm:"varchar:191;"`
 	Description string `gorm:"varchar:191;"`
-	ReleaseDate time.Time `gorm:"type:date"`
+	ReleaseYear uint `gorm:"integer"`
 
 	SeriesNumber int // 0 if not part of a series
 	MaxSeriesNumber int // 0 if not finished

@@ -5,6 +5,7 @@ type Config struct {
 	Server Server
 	DB     DB
 	Jwt    Jwt
+	Google Google
 }
 
 type App struct {
@@ -26,4 +27,8 @@ type DB struct {
 
 type Jwt struct {
 	Secret string
+}
+
+type Google struct {
+	Key string
 }

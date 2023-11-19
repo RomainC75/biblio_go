@@ -8,21 +8,24 @@ import (
 	"net/url"
 
 	"github.com/gocolly/colly/v2"
-	responses "gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/responses"
+	responses "gitub.com/RomainC75/biblio/internal/modules/apis/third-party/googleBook/responses"
+	"gitub.com/RomainC75/biblio/pkg/configu"
 	"gitub.com/RomainC75/biblio/pkg/utils"
 )
 
+var apiURL = "https://www.googleapis.com/"
+
 // isbn : 10/13
-func SearchByReqDetails(queryStr string) (responses.SearchResponseDetails, error) {
-	baseURL := "https://openlibrary.org/"
-	resource := "/api/books"
+func SearchGoogleBook(queryStr string) (responses.GoogleApiResponse, error) {
+	resource := "/books/v1/volumes"
 	params := url.Values{}
-	params.Add("bibkeys", queryStr)
-	params.Add("jscmd", "details")
-	params.Add("format", "json")
+	params.Add("q", queryStr)
+	secret := configu.Get().Google.Key
+	params.Add("key", secret)
+	
 	
 
-	u, _ := url.ParseRequestURI(baseURL)
+	u, _ := url.ParseRequestURI(apiURL)
 	u.Path = resource
 	u.RawQuery = params.Encode()
 	urlStr := fmt.Sprintf("%v", u)
@@ -31,16 +34,16 @@ func SearchByReqDetails(queryStr string) (responses.SearchResponseDetails, error
 	resp, err := http.Get(urlStr)
 
 	if err != nil {
-		return responses.SearchResponseDetails{}, err
+		return responses.GoogleApiResponse{}, err
 	}
 	defer resp.Body.Close()
 	fmt.Println("CODE : ", resp.StatusCode)
 	decoder := json.NewDecoder(resp.Body)
-	var response responses.SearchResponseDetails
+	var response responses.GoogleApiResponse
 	err = decoder.Decode(&response)
 
 	if err != nil {
-		return responses.SearchResponseDetails{}, err
+		return responses.GoogleApiResponse{}, err
 	}
 	fmt.Println("===================")
 	utils.PrettyDisplay(response)
@@ -48,8 +51,8 @@ func SearchByReqDetails(queryStr string) (responses.SearchResponseDetails, error
 	return response, nil
 }
 
-func SearchByReqStandard(queryStr string) (responses.SearchResponseStandard, error) {
-	baseURL := "https://openlibrary.org/"
+func SearchByReqStandard(queryStr string) (responses.GoogleApiResponse, error) {
+	apiURL := "https://openlibrary.org/"
 	resource := "/search.json"
 	params := url.Values{}
 	params.Add("q", queryStr)
@@ -58,7 +61,7 @@ func SearchByReqStandard(queryStr string) (responses.SearchResponseStandard, err
 	params.Add("mode", "everything")
 	params.Add("_spellcheck_count", "0")
 
-	u, _ := url.ParseRequestURI(baseURL)
+	u, _ := url.ParseRequestURI(apiURL)
 	u.Path = resource
 	u.RawQuery = params.Encode()
 	urlStr := fmt.Sprintf("%v", u)
@@ -67,16 +70,16 @@ func SearchByReqStandard(queryStr string) (responses.SearchResponseStandard, err
 	resp, err := http.Get(urlStr)
 
 	if err != nil {
-		return responses.SearchResponseStandard{}, err
+		return responses.GoogleApiResponse{}, err
 	}
 	defer resp.Body.Close()
 
 	decoder := json.NewDecoder(resp.Body)
-	var response responses.SearchResponseStandard
+	var response responses.GoogleApiResponse
 	err = decoder.Decode(&response)
 
 	if err != nil {
-		return responses.SearchResponseStandard{}, err
+		return responses.GoogleApiResponse{}, err
 	}
 	fmt.Println("--->", response)
 	// fmt.Println("-----> RESP : ", resp.Body)
