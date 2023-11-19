@@ -13,12 +13,13 @@ import (
 	"gitub.com/RomainC75/biblio/pkg/utils"
 )
 
-var apiURL = "https://www.googleapis.com/"
 
 type SearchGoogleBookChan struct {
 	Response responses.GoogleApiResponse
 	Err error
 }
+
+var apiURL = "https://www.googleapis.com/"
 
 // isbn : 10/13
 func SearchGoogleBook(queryStr string, out chan SearchGoogleBookChan) {

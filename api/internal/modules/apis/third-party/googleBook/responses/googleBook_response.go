@@ -14,7 +14,7 @@ type VolumeInfo struct {
 	Isbns []IndustryIdentifiers `json:"industryIdentifiers"`
 	PageCount int `json:"pageCount"`
 	Categories []string `json:"categories"`
-	OriginLanguage string `json:"language"`
+	Language string `json:"language"`
 }
 
 type SaleInfo struct {
