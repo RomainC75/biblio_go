@@ -1,4 +1,4 @@
-package services
+package helper
 
 import (
 	"encoding/json"
@@ -11,11 +11,6 @@ import (
 	"gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/responses"
 )
 
-// func New() *UserService {
-// 	return &UserService{
-// 		userRepository: UserRepository.New(),
-// 	}
-// }
 
 func SearchByReq(queryStr string) (responses.SearchResponse, error) {
 	baseURL := "https://openlibrary.org/"
