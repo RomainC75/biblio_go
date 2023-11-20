@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,13 +19,14 @@ func New() *Controller {
 	}
 }
 
-
 func (controller *Controller) SearchBook(c *gin.Context) {
 	isbn := c.Query("isbn")
-	fmt.Println("ISBN : ", isbn)
 
-	ApisHandler.SearchInApis(isbn)
+	compilated, err := ApisHandler.SearchInApis(isbn)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"error": err})
+	}
 
-	c.JSON(http.StatusOK, gin.H{"search": "book"})
+	c.JSON(http.StatusOK, gin.H{"search": compilated})
 }
 

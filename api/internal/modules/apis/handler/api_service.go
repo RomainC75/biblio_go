@@ -37,21 +37,21 @@ func SearchInApis(isbn string)(SearchInApisResponse, error){
 	if olDataResult.Err != nil {
 		fmt.Println("==> DETAILS error ", olDataResult.Err.Error())
 	}
-	utils.PrettyDisplay(olDataResult)
+	// utils.PrettyDisplay(olDataResult)
 
 	fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++")
 	olDetailsResult := <- olDetails
 	if olDetailsResult.Err != nil {
 		fmt.Println("==> DATA error ", olDetailsResult.Err.Error())
 	}
-	utils.PrettyDisplay(olDetailsResult)
+	// utils.PrettyDisplay(olDetailsResult)
 
 	fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++")
 	googleBookChanResult := <- googleBook
 	if googleBookChanResult.Err != nil {
 		fmt.Println("==> GHOOGLE error ", googleBookChanResult.Err.Error())
 	}
-	utils.PrettyDisplay(googleBookChanResult)
+	// utils.PrettyDisplay(googleBookChanResult)
 	
 	compilatedResponse := ApiCombinator(
 		isbn,
@@ -73,8 +73,19 @@ func ApiCombinator(
 		// TODO : filter inside googleBook to find the best item possible.
 		googleBook, _ := googleBookHelper.SelectBook(isbn, googleBookData.Items)
 
-		releaseDateStr := string(googleBook.VolumeInfo.ReleaseDate[0:4])
-		releaseDate, _ := strconv.ParseUint(releaseDateStr, 10, 32)
+		var releaseDate uint64
+		releaseDateStr := ""
+		if len(googleBook.VolumeInfo.ReleaseDate)>=4{
+			releaseDateStr = string(googleBook.VolumeInfo.ReleaseDate[0:4])
+			releaseDate, _ = strconv.ParseUint(releaseDateStr, 10, 32)
+		}
+
+		isbn10, isbn13 := googleBookHelper.ExtractIsbn(googleBook.VolumeInfo.Isbns)
+		isbn100, isbn130 := openLibraryHelper.GetIsbnsFromData(olDataData[isbn].Identifiers)
+		fmt.Println("=========================================")
+		fmt.Println("=========================================")
+		fmt.Println("=>", isbn10, isbn13, isbn100, isbn130)
+		fmt.Println("=========================================")
 
 		weight, _ := openLibraryHelper.GetWeight(olDetailsData.Details.Weight)
 

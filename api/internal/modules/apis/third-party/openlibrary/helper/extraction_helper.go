@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+
+	DataResponse "gitub.com/RomainC75/biblio/internal/modules/apis/third-party/openlibrary/responses"
 )
 
 func GetDimensions(fullStr string)([]float64, error){
@@ -33,4 +35,16 @@ func GetWeight(fullStr string)(uint, error){
 		return uint(0), err
 	}
 	return uint(weight), nil
+}
+
+func GetIsbnsFromData( identifiers DataResponse.Identifiers ) (isbn10 string, isbn13 string){	
+	value10, ok := identifiers["isbn_10"]
+	if ok {
+		isbn10 = value10[0]
+	}
+	value13, ok := identifiers["isbn_13"]
+	if ok {
+		isbn10 = value13[0]
+	}
+	return 
 }
