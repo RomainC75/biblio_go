@@ -24,14 +24,13 @@ var apiURL = "https://www.googleapis.com/"
 // isbn : 10/13
 func SearchGoogleBook(queryStr string, out chan SearchGoogleBookChan) {
 	go func(){
+		defer close(out)
 		resource := "/books/v1/volumes"
 		params := url.Values{}
 		params.Add("q", queryStr)
 		secret := configu.Get().Google.Key
 		params.Add("key", secret)
 		
-		
-
 		u, _ := url.ParseRequestURI(apiURL)
 		u.Path = resource
 		u.RawQuery = params.Encode()

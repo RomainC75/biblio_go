@@ -24,6 +24,7 @@ type SearchByReqDetailsChan struct {
 // isbn : 10/13
 func SearchByReqData(queryStr string, out chan SearchByReqDataChan)  {
 	go func(){
+		defer close(out)
 		resource := "/api/books"
 		params := url.Values{}
 		params.Add("bibkeys", queryStr)
@@ -58,6 +59,7 @@ func SearchByReqData(queryStr string, out chan SearchByReqDataChan)  {
 
 func SearchByReqDetails(queryStr string, out chan SearchByReqDetailsChan) {
 	go func(){
+		defer close(out)
 		resource := "/api/books"
 		params := url.Values{}
 		params.Add("bibkeys", queryStr)
