@@ -53,7 +53,7 @@ func (BookRepository *BookRepository) CreateBook(bookInfos ApisHandler.SearchInA
 
 func (BookRepository *BookRepository) FindBookByISBN(isbn string) (bookModel.Book, error) {
 	var foundBook bookModel.Book
-	if err := BookRepository.DB.Preload("Authors").Preload("Links").Preload("Editor").Where("isbn10 = ? OR isbn13 = ?", isbn, isbn).First(&foundBook).Error; err != nil {
+	if err := BookRepository.DB.Preload("Authors").Preload("Links").Preload("Editor").Preload("Languages").Where("isbn10 = ? OR isbn13 = ?", isbn, isbn).First(&foundBook).Error; err != nil {
 		return bookModel.Book{}, err
 	}
 	return foundBook, nil
