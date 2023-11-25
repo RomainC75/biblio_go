@@ -7,8 +7,8 @@ import (
 type Book struct {
 	gorm.Model
 	// -> ID, CreatedAt, UpdatedAt, DeletedAt
-	Isbn10      string    `gorm:"varchar:191;"`
-	Isbn13      string    `gorm:"varchar:191;"`
+	Isbn10      string    `gorm:"varchar:191;unique_index"`
+	Isbn13      string    `gorm:"varchar:191;unique_index"`
 
 	Title string `gorm:"varchar:191;"`
 	Description string `gorm:"varchar:191;"`

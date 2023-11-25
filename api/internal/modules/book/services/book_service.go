@@ -1,11 +1,10 @@
 package services
 
 import (
-	"github.com/google/uuid"
+	ApisHandler "gitub.com/RomainC75/biblio/internal/modules/apis/handler"
 	"gitub.com/RomainC75/biblio/internal/modules/apis/third-party/openlibrary/responses"
 	BookModel "gitub.com/RomainC75/biblio/internal/modules/book/models"
 	BookRepository "gitub.com/RomainC75/biblio/internal/modules/book/repositories"
-	BookRequest "gitub.com/RomainC75/biblio/internal/modules/book/requests"
 )
 
 type BookService struct {
@@ -38,22 +37,11 @@ func (bookService *BookService) CreateFromSearchResponse(book responses.SearchRe
 	return BookModel.Book{}, nil
 }
 
-func (bookService *BookService) CreateBook(userId uuid.UUID, book BookRequest.CreateBookRequest) (BookModel.Book, error) {
-// 	createdAuthors := bookService.bookRepository.FirstOrCreateAuthors(book.Authors)
-// 	utils.PrettyDisplay(book)
-// 	newBook := BookModel.Book{
-// 		Authors:      createdAuthors,
-// 		Title:        book.Title,
-// 		ISBN:         book.ISBN,
-// 		GenreCode:    book.GenreCode,
-// 		LanguageCode: book.LanguageCode,
-// 		UserRefer:    userId,
-// 	}
-// 	result := bookService.bookRepository.Create(newBook)
+func (bookService *BookService) CreateNewBook(bookInfos ApisHandler.SearchInApisResponse) (BookModel.Book, error) {
+	
+	newBook, _ := bookService.bookRepository.CreateBook(bookInfos)
 
-// 	result.Authors = createdAuthors
-// 	return result, nil
-	return BookModel.Book{}, nil
+	return newBook, nil
 }
 
 func (bookService *BookService) FindBooksByUserId(userId string) []BookModel.Book {

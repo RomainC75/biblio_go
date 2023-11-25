@@ -91,7 +91,14 @@ func ApiCombinator(
 
 		fullDimensionsStr, err := openLibraryHelper.GetDimensions(olDetailsData.Details.Dimensions)
 		if err != nil{
-			fullDimensionsStr = []float64{0,0,0}
+			fullDimensionsStr = []float64{0, 0, 0}
+		}
+
+		var genres []string
+		if len(googleBook.VolumeInfo.Categories) > 0{
+			genres = googleBook.VolumeInfo.Categories
+		}else{
+			genres = []string{}
 		}
 
 		var description string
@@ -123,7 +130,7 @@ func ApiCombinator(
 			Links : []string{olDetailsData.ThumbnailUrl},
 			Language : []string{ googleBook.VolumeInfo.Language },
 			// Genres : olDataData.VolumeInfo.Categories,
-			Genres : googleBook.VolumeInfo.Categories,
+			Genres : genres,
 			Authors : googleBook.VolumeInfo.Authors,
 		}
 }
