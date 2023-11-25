@@ -44,6 +44,11 @@ func (bookService *BookService) CreateNewBook(bookInfos ApisHandler.SearchInApis
 	return newBook, nil
 }
 
+func (bookService *BookService) FindBookByIsbnSrv(isbn string) (BookModel.Book, error) {
+	newBook, err := bookService.bookRepository.FindBookByISBN(isbn)
+	return newBook, err
+}
+
 func (bookService *BookService) FindBooksByUserId(userId string) []BookModel.Book {
 // 	foundBooks := bookService.bookRepository.FindByUserID(userId)
 // 	return foundBooks

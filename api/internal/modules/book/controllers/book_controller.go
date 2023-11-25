@@ -26,6 +26,12 @@ func New() *Controller {
 func (controller *Controller) SearchBook(c *gin.Context) {
 	isbn := c.Query("isbn")
 
+	foundBook, err := controller.bookService.FindBookByIsbnSrv(isbn)
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"foundBook": foundBook})	
+		return 
+	}
+
 	compilated, err := ApisHandler.SearchInApis(isbn)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"error": err})

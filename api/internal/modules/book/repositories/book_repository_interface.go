@@ -13,6 +13,8 @@ type BookRepositoryInterface interface {
 	FirstOrCreateLanguages(book bookModel.Book, newLanguages []string) []bookModel.Language
 	FirstOrCreateAuthors(book bookModel.Book, newAuthors []string) []bookModel.Author
 	FirstOrCreateGenres(book bookModel.Book, newGenres []string) []bookModel.Genre
+	
+	FindBookByISBN(isbn string) (bookModel.Book, error)
 
 	FindByISBN(isbn string) (bookModel.Book, error)
 	FindById(id string) (bookModel.Book, error)

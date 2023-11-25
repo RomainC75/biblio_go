@@ -14,6 +14,7 @@ type BookServiceInterface interface {
 	// CreateBook(uuid.UUID, BookRequest.CreateBookRequest) (BookModel.Book, error)
 	CreateNewBook(bookInfos ApisHandler.SearchInApisResponse) (BookModel.Book, error)
 	FindBooksByUserId(userId string) ([]BookModel.Book)
+	FindBookByIsbnSrv(isbn string) (BookModel.Book, error)
 	// DeleteBook(userId string, bookId string) (BookModel.Book, error)
 	UpdateBook(userId string, book BookModel.Book ) (BookModel.Book, error)
 	UpdateAuthorsSrv(authors []BookModel.Author ) ([]BookModel.Author, error)

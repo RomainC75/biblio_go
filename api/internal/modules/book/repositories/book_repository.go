@@ -22,7 +22,7 @@ func New() *BookRepository {
 }
 
 func (BookRepository *BookRepository) CreateBook(bookInfos ApisHandler.SearchInApisResponse) (bookModel.Book, error) {
-	var newBook bookModel.Book
+	
 
 	editor := BookRepository.FirstOrCreateEditor(bookInfos.Editor)
 	bookInfos.Book.EditorRef = editor.ID
@@ -32,21 +32,31 @@ func (BookRepository *BookRepository) CreateBook(bookInfos ApisHandler.SearchInA
 	// if err := BookRepository.DB.Create(&bookInfos.Book).Scan(&newBook).Error; err!=nil{
 	// 	return bookModel.Book{}, err
 	// }
-	if err := BookRepository.DB.FirstOrCreate(newBook, &bookInfos.Book).Error; err!=nil{
+	if err := BookRepository.DB.Create(&bookInfos.Book).Error; err!=nil{
 		return bookModel.Book{}, err
 	}
 
-	links := BookRepository.FirstOrCreateLinks(bookInfos.Links, newBook.ID)
-	newBook.Links = links
-	languages := BookRepository.FirstOrCreateLanguages(newBook, bookInfos.Language)
-	newBook.Languages = languages
-	genres := BookRepository.FirstOrCreateGenres(newBook, bookInfos.Genres)
-	newBook.Genres = genres
+	links := BookRepository.FirstOrCreateLinks(bookInfos.Links, bookInfos.Book.ID)
+	bookInfos.Book.Links = links
+	languages := BookRepository.FirstOrCreateLanguages(bookInfos.Book, bookInfos.Language)
+	bookInfos.Book.Languages = languages
+	genres := BookRepository.FirstOrCreateGenres(bookInfos.Book, bookInfos.Genres)
+	bookInfos.Book.Genres = genres
+	authors := BookRepository.FirstOrCreateAuthors(bookInfos.Book, bookInfos.Authors)
+	bookInfos.Book.Authors = authors
 
 	fmt.Println("==>")
 	// BookRepository.DB.Model(&book).Association("Authors")
 	// BookRepository.DB.Save(&book)
-	return newBook, nil
+	return bookInfos.Book, nil
+}
+
+func (BookRepository *BookRepository) FindBookByISBN(isbn string) (bookModel.Book, error) {
+	var foundBook bookModel.Book
+	if err := BookRepository.DB.Preload("Authors").Preload("Links").Preload("Editor").Where("isbn10 = ? OR isbn13 = ?", isbn, isbn).First(&foundBook).Error; err != nil {
+		return bookModel.Book{}, err
+	}
+	return foundBook, nil
 }
 
 // func (BookRepository *BookRepository) CreateBook(book bookModel.Book) bookModel.Book {

@@ -26,7 +26,9 @@ type Book struct {
 	NumberOfPages int
 
 	// manyToOne
+	Editor    Editor `gorm:"foreignKey:EditorRef"`
 	EditorRef uint // manyToOne
+	
 	Links []Link `gorm:"foreignKey:BookRef"`
 	// manyToMany
 	Languages []Language `gorm:"many2many:book_language;"`
