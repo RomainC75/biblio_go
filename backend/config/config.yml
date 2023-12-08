@@ -1,0 +1,20 @@
+app:
+  name: "Biblio"
+
+server:
+  host: "localhost"
+  port: "8082"
+
+db:
+  username: "name"
+  password: "pass"
+  host: "localhost"
+  port: "5432"
+  name: "biblio"
+
+jwt:
+  secret: "azerty"
+
+google:
+  key: "AIzaSyC0SUfkwTBw3G8r9-sU5sTYIha7oOdWXNo"
+
