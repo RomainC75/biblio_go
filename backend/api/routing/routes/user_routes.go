@@ -1,7 +1,7 @@
 package routes
 
 import (
-	userCtrl "gitub.com/RomainC75/biblio/api/controllers"
+	Ctrl "gitub.com/RomainC75/biblio/api/controllers"
 	middlewares "gitub.com/RomainC75/biblio/api/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -9,7 +9,7 @@ import (
 
 func UserRoutes(router *gin.Engine) {
 
-	userController := userCtrl.New()
+	userController := Ctrl.NewAuthCtrl()
 	guestGroup := router.Group("/auth")
 	// guestGroup.Use(middlewares.IsAuth())
 	{

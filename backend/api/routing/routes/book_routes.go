@@ -1,14 +1,14 @@
 package routes
 
 import (
-	bookCtrl "gitub.com/RomainC75/biblio/internal/modules/book/controllers"
+	Ctrl "gitub.com/RomainC75/biblio/api/controllers"
 
 	"github.com/gin-gonic/gin"
 )
 
 func BookRoutes(router *gin.Engine) {
 
-	userController := bookCtrl.New()
+	userController := Ctrl.NewBookCtrl()
 	guestGroup := router.Group("/books")
 	{
 		guestGroup.GET("/search", userController.SearchBook)

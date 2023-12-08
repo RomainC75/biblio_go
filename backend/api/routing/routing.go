@@ -1,7 +1,7 @@
 package routing
 
 import (
-	"gitub.com/RomainC75/biblio/api/router/routes"
+	"gitub.com/RomainC75/biblio/api/routing/routes"
 
 	"github.com/gin-gonic/gin"
 )
