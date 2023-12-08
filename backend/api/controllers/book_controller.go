@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	Handlers "gitub.com/RomainC75/biblio/api/handlers"
 	Services "gitub.com/RomainC75/biblio/api/services"
 	"gitub.com/RomainC75/biblio/utils"
+	TPApisServices "gitub.com/RomainC75/biblio/utils/third-party-apis/services"
 )
 
 type BookController struct {
@@ -31,7 +31,7 @@ func (controller *BookController) SearchBook(c *gin.Context) {
 		return 
 	}
 
-	compilated, err := Handlers.SearchInApis(isbn)
+	compilated, err := TPApisServices.SearchInApis(isbn)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"error": err})
 	}

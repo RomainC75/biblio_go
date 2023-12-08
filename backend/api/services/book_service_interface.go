@@ -5,13 +5,13 @@ import (
 
 	Models "gitub.com/RomainC75/biblio/data/models"
 
-	ApisHandler "gitub.com/RomainC75/biblio/api/handlers"
+	TPApisServices "gitub.com/RomainC75/biblio/utils/third-party-apis/services"
 )
 
 type BookServiceInterface interface {
 	CreateFromSearchResponse(book responses.SearchResponseData) (Models.Book, error)
 	// CreateBook(uuid.UUID, BookRequest.CreateBookRequest) (Models.Book, error)
-	CreateNewBook(bookInfos ApisHandler.SearchInApisResponse) (Models.Book, error)
+	CreateNewBook(bookInfos TPApisServices.SearchInApisResponse) (Models.Book, error)
 	FindBooksByUserId(userId string) ([]Models.Book)
 	FindBookByIsbnSrv(isbn string) (Models.Book, error)
 	// DeleteBook(userId string, bookId string) (Models.Book, error)

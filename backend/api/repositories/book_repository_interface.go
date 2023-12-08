@@ -1,12 +1,12 @@
 package repositories
 
 import (
-	Handlers "gitub.com/RomainC75/biblio/api/handlers"
 	Models "gitub.com/RomainC75/biblio/data/models"
+	Services "gitub.com/RomainC75/biblio/utils/third-party-apis/services"
 )
 
 type BookRepositoryInterface interface {
-	CreateBook(bookInfos Handlers.SearchInApisResponse) (Models.Book, error)
+	CreateBook(bookInfos Services.SearchInApisResponse) (Models.Book, error)
 	
 	FirstOrCreateEditor(editorName string) Models.Editor 
 	FirstOrCreateLinks(newLinks []string, bookId uint) []Models.Link

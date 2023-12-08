@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
-	Handlers "gitub.com/RomainC75/biblio/api/handlers"
 	"gitub.com/RomainC75/biblio/data/database"
 	Models "gitub.com/RomainC75/biblio/data/models"
 	"gitub.com/RomainC75/biblio/utils"
+	TPApisService "gitub.com/RomainC75/biblio/utils/third-party-apis/services"
 	"gorm.io/gorm"
 )
 
@@ -21,7 +21,7 @@ func NewBookRepo() *BookRepository {
 	}
 }
 
-func (BookRepository *BookRepository) CreateBook(bookInfos Handlers.SearchInApisResponse) (Models.Book, error) {
+func (BookRepository *BookRepository) CreateBook(bookInfos TPApisService.SearchInApisResponse) (Models.Book, error) {
 	
 
 	editor := BookRepository.FirstOrCreateEditor(bookInfos.Editor)

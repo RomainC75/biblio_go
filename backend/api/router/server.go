@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"log"
 
-	"gitub.com/RomainC75/biblio/pkg/configu"
+	"gitub.com/RomainC75/biblio/config"
 )
 
 func Serve() {
-	configs := configu.Get()
+	configs := config.Get()
 
 	// really usefull ?????
 	r := GetRouter()

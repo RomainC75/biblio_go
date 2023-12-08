@@ -10,8 +10,8 @@ import (
 	Dto "gitub.com/RomainC75/biblio/api/dto"
 	BookService "gitub.com/RomainC75/biblio/api/services"
 	BookModel "gitub.com/RomainC75/biblio/data/models"
-	OpenLibraryService "gitub.com/RomainC75/biblio/internal/modules/apis/openlibrary/services"
 	Utils "gitub.com/RomainC75/biblio/utils"
+	TPApisServices "gitub.com/RomainC75/biblio/utils/third-party-apis/services"
 )
 
 type Controller struct {
@@ -26,7 +26,7 @@ func New() *Controller {
 
 func (controller *Controller) Search(c *gin.Context) {
 
-	foundBook, err := OpenLibraryService.SearchByReq("0552778079")
+	foundBook, err := TPApisServices.SearchByReq("0552778079")
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
 	}

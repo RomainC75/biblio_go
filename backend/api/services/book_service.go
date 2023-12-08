@@ -1,10 +1,10 @@
 package services
 
 import (
-	ApisHandler "gitub.com/RomainC75/biblio/api/handlers"
 	Repository "gitub.com/RomainC75/biblio/api/repositories"
 	Model "gitub.com/RomainC75/biblio/data/models"
 	"gitub.com/RomainC75/biblio/utils/third-party-apis/openlibrary/responses"
+	TPApisServices "gitub.com/RomainC75/biblio/utils/third-party-apis/services"
 )
 
 type BookService struct {
@@ -37,7 +37,7 @@ func (bookService *BookService) CreateFromSearchResponse(book responses.SearchRe
 	return Model.Book{}, nil
 }
 
-func (bookService *BookService) CreateNewBook(bookInfos ApisHandler.SearchInApisResponse) (Model.Book, error) {
+func (bookService *BookService) CreateNewBook(bookInfos TPApisServices.SearchInApisResponse) (Model.Book, error) {
 	
 	newBook, _ := bookService.bookRepository.CreateBook(bookInfos)
 

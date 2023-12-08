@@ -1,17 +1,15 @@
 package bootstrap
 
 import (
-	"gitub.com/RomainC75/biblio/pkg/configu"
-	"gitub.com/RomainC75/biblio/pkg/database"
-
+	"gitub.com/RomainC75/biblio/config"
+	"gitub.com/RomainC75/biblio/data/database"
 	// "gitub.com/RomainC75/biblio/pkg/html"
-	"gitub.com/RomainC75/biblio/pkg/routing"
 	// "gitub.com/RomainC75/biblio/pkg/sessions"
 	// "gitub.com/RomainC75/biblio/pkg/static"
 )
 
 func Serve() {
-	configu.Set()
+	config.Set()
 
 	database.Connect()
 
