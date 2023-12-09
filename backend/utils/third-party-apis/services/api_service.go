@@ -10,8 +10,6 @@ import (
 	openLibraryResponse "gitub.com/RomainC75/biblio/utils/third-party-apis/openlibrary/responses"
 
 	Models "gitub.com/RomainC75/biblio/data/models"
-
-	"gitub.com/RomainC75/biblio/utils"
 )
 
 type SearchInApisResponse struct {
@@ -32,26 +30,20 @@ func SearchInApis(isbn string)(SearchInApisResponse, error){
 	openLibraryHelper.SearchByReqDetails(isbn, olDetails)
 	googleBookHelper.SearchGoogleBook(isbn, googleBook)
 
-	fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++")
 	olDataResult := <- olData
 	if olDataResult.Err != nil {
 		fmt.Println("==> DETAILS error ", olDataResult.Err.Error())
 	}
-	// utils.PrettyDisplay(olDataResult)
 
-	fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++")
 	olDetailsResult := <- olDetails
 	if olDetailsResult.Err != nil {
 		fmt.Println("==> DATA error ", olDetailsResult.Err.Error())
 	}
-	// utils.PrettyDisplay(olDetailsResult)
 
-	fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++")
 	googleBookChanResult := <- googleBook
 	if googleBookChanResult.Err != nil {
 		fmt.Println("==> GHOOGLE error ", googleBookChanResult.Err.Error())
 	}
-	// utils.PrettyDisplay(googleBookChanResult)
 	
 	compilatedResponse := ApiCombinator(
 		isbn,
@@ -59,7 +51,7 @@ func SearchInApis(isbn string)(SearchInApisResponse, error){
 		olDataResult.Response,
 		googleBookChanResult.Response,
 	)
-	utils.PrettyDisplay(compilatedResponse)
+	
 	return compilatedResponse, nil
 }
 
@@ -82,10 +74,7 @@ func ApiCombinator(
 
 		isbn10, isbn13 := googleBookHelper.ExtractIsbn(googleBook.VolumeInfo.Isbns)
 		isbn100, isbn130 := openLibraryHelper.GetIsbnsFromData(olDataData[isbn].Identifiers)
-		fmt.Println("=========================================")
-		fmt.Println("=========================================")
-		fmt.Println("=>", isbn10, isbn13, isbn100, isbn130)
-		fmt.Println("=========================================")
+		fmt.Println("=>ISBNS", isbn10, isbn13, isbn100, isbn130)
 
 		weight, _ := openLibraryHelper.GetWeight(olDetailsData.Details.Weight)
 

@@ -35,7 +35,9 @@ func (controller *BookController) SearchBook(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"error": err})
 	}
-
+	fmt.Println("==> Compilated : ")
+	utils.PrettyDisplay(compilated)
+	
 	newBook, _ := controller.bookService.CreateNewBook(compilated)
 	
 	fmt.Println("==========================> OUT FROM DB ")

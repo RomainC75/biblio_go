@@ -26,8 +26,11 @@ func (BookRepository *BookRepository) CreateBook(bookInfos TPApisService.SearchI
 
 	editor := BookRepository.FirstOrCreateEditor(bookInfos.Editor)
 	bookInfos.Book.EditorRef = editor.ID
+	bookInfos.Book.Editor = editor
 	fmt.Println("====> EDITOR IN DB : ")
 	utils.PrettyDisplay(editor)
+
+	
 
 	// if err := BookRepository.DB.Create(&bookInfos.Book).Scan(&newBook).Error; err!=nil{
 	// 	return Models.Book{}, err
@@ -35,6 +38,7 @@ func (BookRepository *BookRepository) CreateBook(bookInfos TPApisService.SearchI
 	if err := BookRepository.DB.Create(&bookInfos.Book).Error; err!=nil{
 		return Models.Book{}, err
 	}
+	
 
 	links := BookRepository.FirstOrCreateLinks(bookInfos.Links, bookInfos.Book.ID)
 	bookInfos.Book.Links = links
