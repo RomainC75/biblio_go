@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	Responses "gitub.com/RomainC75/biblio/api/dto/responses"
 	Services "gitub.com/RomainC75/biblio/api/services"
 	"gitub.com/RomainC75/biblio/utils"
 	TPApisServices "gitub.com/RomainC75/biblio/utils/third-party-apis/services"
@@ -27,7 +28,7 @@ func (controller *BookController) SearchBook(c *gin.Context) {
 
 	foundBook, err := controller.bookService.FindBookByIsbnSrv(isbn)
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"foundBook": foundBook})	
+		c.JSON(http.StatusOK, gin.H{"book": Responses.ToBookResponse(foundBook)})	
 		return 
 	}
 
@@ -37,12 +38,13 @@ func (controller *BookController) SearchBook(c *gin.Context) {
 	}
 	fmt.Println("==> Compilated : ")
 	utils.PrettyDisplay(compilated)
-	
+
 	newBook, _ := controller.bookService.CreateNewBook(compilated)
 	
 	fmt.Println("==========================> OUT FROM DB ")
 	utils.PrettyDisplay(newBook)
 
-	c.JSON(http.StatusOK, gin.H{"search": newBook})
+
+	c.JSON(http.StatusOK, gin.H{"book": Responses.ToBookResponse(newBook)})
 }
 

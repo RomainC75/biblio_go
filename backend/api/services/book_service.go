@@ -40,7 +40,7 @@ func (bookService *BookService) CreateFromSearchResponse(book responses.SearchRe
 func (bookService *BookService) CreateNewBook(bookInfos TPApisServices.SearchInApisResponse) (Model.Book, error) {
 	
 	newBook, _ := bookService.bookRepository.CreateBook(bookInfos)
-
+	
 	return newBook, nil
 }
 
