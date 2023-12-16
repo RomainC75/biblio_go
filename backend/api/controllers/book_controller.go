@@ -8,6 +8,7 @@ import (
 	Responses "gitub.com/RomainC75/biblio/api/dto/responses"
 	Services "gitub.com/RomainC75/biblio/api/services"
 	"gitub.com/RomainC75/biblio/utils"
+	FilterHelper "gitub.com/RomainC75/biblio/utils/filter"
 	TPApisServices "gitub.com/RomainC75/biblio/utils/third-party-apis/services"
 )
 
@@ -24,7 +25,12 @@ func NewBookCtrl() *BookController {
 }
 
 func (controller *BookController) SearchBook(c *gin.Context) {
-	isbn := c.Query("isbn")
+	rawIsbn := c.Query("isbn")
+	isbn, err := FilterHelper.FilterISBN(rawIsbn)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()})	
+		return
+	}
 
 	foundBook, err := controller.bookService.FindBookByIsbnSrv(isbn)
 	if err == nil {
@@ -34,7 +40,8 @@ func (controller *BookController) SearchBook(c *gin.Context) {
 
 	compilated, err := TPApisServices.SearchInApis(isbn)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"error": err})
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+		return
 	}
 	fmt.Println("==> Compilated : ")
 	utils.PrettyDisplay(compilated)

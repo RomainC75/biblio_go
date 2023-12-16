@@ -1,9 +1,11 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
+	"gitub.com/RomainC75/biblio/utils"
 	googleBookHelper "gitub.com/RomainC75/biblio/utils/third-party-apis/googleBook/helper"
 	googleBookResponse "gitub.com/RomainC75/biblio/utils/third-party-apis/googleBook/responses"
 	openLibraryHelper "gitub.com/RomainC75/biblio/utils/third-party-apis/openlibrary/helper"
@@ -15,8 +17,8 @@ import (
 type SearchInApisResponse struct {
 		Book  Models.Book 
 		Editor  string
-		Links  []string 
-		Language []string 
+		Links  []string
+		Language []string
 		Genres  []string
 		Authors  []string
 }
@@ -44,7 +46,14 @@ func SearchInApis(isbn string)(SearchInApisResponse, error){
 	if googleBookChanResult.Err != nil {
 		fmt.Println("==> GHOOGLE error ", googleBookChanResult.Err.Error())
 	}
+	fmt.Printf("==> GOOGLE : %+v\n")
+	utils.PrettyDisplay(googleBookChanResult.Response)
 	
+	fmt.Printf("==> ITEMS :  : %+d\n", googleBookChanResult.Response.TotalItems)
+	if googleBookChanResult.Response.TotalItems == 0 {
+		return SearchInApisResponse{}, errors.New(fmt.Sprintf("no book found for isbn %s", isbn))
+	}
+
 	compilatedResponse := ApiCombinator(
 		isbn,
 		olDetailsResult.Response[isbn],

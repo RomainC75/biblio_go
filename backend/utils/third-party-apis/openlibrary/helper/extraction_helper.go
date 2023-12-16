@@ -9,7 +9,7 @@ import (
 	DataResponse "gitub.com/RomainC75/biblio/utils/third-party-apis/openlibrary/responses"
 )
 
-func GetDimensions(fullStr string)([]float64, error){
+func GetDimensions(fullStr string) ([]float64, error){
 	r, _ := regexp.Compile("[0-9.]+")
 	dimensions := r.FindAllString(fullStr, -1)
 	if len(dimensions) != 3 {
@@ -27,7 +27,7 @@ func GetDimensions(fullStr string)([]float64, error){
 	return floatDimensions, nil
 }
 
-func GetWeight(fullStr string)(uint, error){
+func GetWeight(fullStr string) (uint, error){
 	r, _ := regexp.Compile("[0-9]+")
 	weightStr := r.FindString(fullStr)
 	weight, err := strconv.ParseUint(weightStr, 10, 64)

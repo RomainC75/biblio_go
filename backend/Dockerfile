@@ -5,21 +5,23 @@ ENV PROJECT_DIR=/app \
     CGO_ENABLED=0
 
 RUN mkdir /app
-COPY .. /app
+COPY . /app
 WORKDIR /app
+
+RUN go mod download
 
 RUN go get github.com/githubnemo/CompileDaemon
 RUN go install github.com/githubnemo/CompileDaemon
 
-RUN go get github.com/spf13/cobra
-RUN go get golang.org/x/crypto/bcrypt
-RUN go get github.com/gin-gonic/gin
-RUN go get github.com/go-playground/validator/v10
-RUN go get github.com/spf13/viper
-RUN go get gorm.io/driver/postgres
-RUN go get gorm.io/gorm
-RUN go install github.com/gzuidhof/tygo@latest
-RUN go get github.com/gocolly/colly/v2
+# RUN go get github.com/spf13/cobra
+# RUN go get golang.org/x/crypto/bcrypt
+# RUN go get github.com/gin-gonic/gin
+# RUN go get github.com/go-playground/validator/v10
+# RUN go get github.com/spf13/viper
+# RUN go get gorm.io/driver/postgres
+# RUN go get gorm.io/gorm
+# RUN go install github.com/gzuidhof/tygo@latest
+# RUN go get github.com/gocolly/colly/v2
 
 # The build flag sets how to build after a change has been detected in the source code
 # The command flag sets how to run the app after it has been built
