@@ -120,3 +120,30 @@ func Search(queryStr string) (int, error) {
 
 	return 1, nil
 }
+
+type GoogleDetails struct{
+	ImageLinks map[string]string
+		
+
+}
+
+// type GoogleImageLinks struct{
+// 	SmallThumbnail string `json:"smallThumbnail"`
+// 	Thumbnail string `json:"thumbnail"`
+// 	Small `json:"small"`
+// 	Medium `json:"medium"`
+// 	Large `json:"large"`
+// 	ExtraLarge `json:"extraLarge"`
+// }
+
+
+// func FindGoogleDetails(url string) GoogleDetails{
+// 	resp, err := http.Get(url)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	defer resp.Body.Close()
+
+// 	decoder := json.NewDecoder(resp.Body)
+// 	var response GoogleDetails
+// }
