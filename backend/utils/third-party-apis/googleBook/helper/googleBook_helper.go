@@ -15,9 +15,10 @@ import (
 
 
 type SearchGoogleBookChan struct {
-	Response responses.GoogleApiResponse
+	Response responses.Item
 	Err error
 }
+
 
 var apiURL = "https://www.googleapis.com/"
 
@@ -40,7 +41,7 @@ func SearchGoogleBook(queryStr string, out chan SearchGoogleBookChan) {
 		resp, err := http.Get(urlStr)
 
 		if err != nil {
-			out <- SearchGoogleBookChan{responses.GoogleApiResponse{}, err}
+			out <- SearchGoogleBookChan{responses.Item{}, err}
 		}
 		defer resp.Body.Close()
 		fmt.Println("CODE : ", resp.StatusCode)
@@ -49,12 +50,23 @@ func SearchGoogleBook(queryStr string, out chan SearchGoogleBookChan) {
 		err = decoder.Decode(&response)
 
 		if err != nil {
-			out <- SearchGoogleBookChan{responses.GoogleApiResponse{}, err}
+			out <- SearchGoogleBookChan{responses.Item{}, err}
 		}
 		fmt.Println("===================")
 		utils.PrettyDisplay(response)
 		// fmt.Println("-----> RESP : ", resp.Body)
-		out <- SearchGoogleBookChan{response, nil}
+		item, err := SelectBook(queryStr, response.Items)
+		if err != nil {
+			out <- SearchGoogleBookChan{responses.Item{}, err}
+			return
+		}
+
+		googleDetails, err := FindGoogleDetails(item.SelfLink)
+		if err == nil{
+			item.Details = googleDetails
+		}
+
+		out <- SearchGoogleBookChan{item, nil}
 	}()
 }
 
@@ -121,29 +133,27 @@ func Search(queryStr string) (int, error) {
 	return 1, nil
 }
 
-type GoogleDetails struct{
-	ImageLinks map[string]string
-		
 
+
+
+func FindGoogleDetails(url string) (responses.GoogleDetails, error){
+	fmt.Println("get : ", url)
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	decoder := json.NewDecoder(resp.Body)
+	var response responses.GoogleDetails
+	err = decoder.Decode(&response)
+	if err != nil {
+		log.Fatal("FindGoogleDetails", err)
+		return responses.GoogleDetails{}, err
+	}
+
+	fmt.Println("=============DETAILS================")
+	utils.PrettyDisplay(response)
+
+	return response, nil
 }
-
-// type GoogleImageLinks struct{
-// 	SmallThumbnail string `json:"smallThumbnail"`
-// 	Thumbnail string `json:"thumbnail"`
-// 	Small `json:"small"`
-// 	Medium `json:"medium"`
-// 	Large `json:"large"`
-// 	ExtraLarge `json:"extraLarge"`
-// }
-
-
-// func FindGoogleDetails(url string) GoogleDetails{
-// 	resp, err := http.Get(url)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	defer resp.Body.Close()
-
-// 	decoder := json.NewDecoder(resp.Body)
-// 	var response GoogleDetails
-// }

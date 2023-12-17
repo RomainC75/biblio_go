@@ -30,10 +30,29 @@ type Item struct {
 	VolumeInfo VolumeInfo `json:"volumeInfo"`
 	SaleInfo `json:"saleInfo"`
 	SearchInfo SearchInfo `json:"searchInfo"`
+	SelfLink string `json:"selfLink"`
+	Details GoogleDetails `json:"details"`
 }
 
 type GoogleApiResponse struct {
 	Kind string `json:"kind"`
 	TotalItems int `json:"totalItems"`
 	Items []Item `json:"items"`
+}
+
+type GoogleDetails struct{
+	VolumeInfo struct{
+		ImageLinks GoogleImageLinks `json:"imageLinks"`
+		Categories []string `json:"categories"`
+		Publisher string `json:"publisher"`
+	} `json:"volumeInfo"`
+}
+
+type GoogleImageLinks struct{
+	SmallThumbnail string `json:"smallThumbnail"`
+	Thumbnail string `json:"thumbnail"`
+	Small string `json:"small"`
+	Medium string `json:"medium"`
+	Large string `json:"large"`
+	ExtraLarge string `json:"extraLarge"`
 }

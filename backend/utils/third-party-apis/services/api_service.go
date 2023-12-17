@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"fmt"
+	"reflect"
 	"strconv"
 
 	"gitub.com/RomainC75/biblio/utils"
@@ -44,15 +45,11 @@ func SearchInApis(isbn string)(SearchInApisResponse, error){
 
 	googleBookChanResult := <- googleBook
 	if googleBookChanResult.Err != nil {
-		fmt.Println("==> GHOOGLE error ", googleBookChanResult.Err.Error())
+		return SearchInApisResponse{}, errors.New(fmt.Sprintf("no book found for isbn %s", isbn))
 	}
 	fmt.Printf("==> GOOGLE : %+v\n")
 	utils.PrettyDisplay(googleBookChanResult.Response)
 	
-	fmt.Printf("==> ITEMS :  : %+d\n", googleBookChanResult.Response.TotalItems)
-	if googleBookChanResult.Response.TotalItems == 0 {
-		return SearchInApisResponse{}, errors.New(fmt.Sprintf("no book found for isbn %s", isbn))
-	}
 
 	compilatedResponse := ApiCombinator(
 		isbn,
@@ -68,20 +65,19 @@ func ApiCombinator(
 	isbn string, 
 	olDetailsData openLibraryResponse.Root,
 	olDataData openLibraryResponse.SearchResponseData,
-	googleBookData googleBookResponse.GoogleApiResponse,
+	googleBookItem googleBookResponse.Item,
 	) SearchInApisResponse{
 
 		// TODO : filter inside googleBook to find the best item possible.
-		googleBook, _ := googleBookHelper.SelectBook(isbn, googleBookData.Items)
 
 		var releaseDate uint64
 		releaseDateStr := ""
-		if len(googleBook.VolumeInfo.ReleaseDate)>=4{
-			releaseDateStr = string(googleBook.VolumeInfo.ReleaseDate[0:4])
+		if len(googleBookItem.VolumeInfo.ReleaseDate)>=4{
+			releaseDateStr = string(googleBookItem.VolumeInfo.ReleaseDate[0:4])
 			releaseDate, _ = strconv.ParseUint(releaseDateStr, 10, 32)
 		}
 
-		isbn10, isbn13 := googleBookHelper.ExtractIsbn(googleBook.VolumeInfo.Isbns)
+		isbn10, isbn13 := googleBookHelper.ExtractIsbn(googleBookItem.VolumeInfo.Isbns)
 		isbn100, isbn130 := openLibraryHelper.GetIsbnsFromData(olDataData[isbn].Identifiers)
 		fmt.Println("=>ISBNS", isbn10, isbn13, isbn100, isbn130)
 
@@ -93,24 +89,45 @@ func ApiCombinator(
 		}
 
 		var genres []string
-		if len(googleBook.VolumeInfo.Categories) > 0{
-			genres = googleBook.VolumeInfo.Categories
+		if len(googleBookItem.VolumeInfo.Categories) > 0{
+			genres = googleBookItem.VolumeInfo.Categories
 		}else{
 			genres = []string{}
 		}
 
 		var description string
-		if len(googleBook.VolumeInfo.Description)>0 {
-			description = googleBook.VolumeInfo.Description
+		if len(googleBookItem.VolumeInfo.Description)>0 {
+			description = googleBookItem.VolumeInfo.Description
 		}else {
-			description = googleBook.SearchInfo.ShortDescription
+			description = googleBookItem.SearchInfo.ShortDescription
 		}
+
+		var publisher string
+		if len(olDetailsData.Details.Publisher)	> 0{
+			publisher = olDetailsData.Details.Publisher[0]
+		}else{
+			publisher = googleBookItem.Details.VolumeInfo.Publisher
+		}
+
+		links := []string{}
+		values := reflect.ValueOf(googleBookItem.Details.VolumeInfo.ImageLinks)
+		for i := values.NumField()-1 ; i >= 0 ; i-- {
+			field := values.Field(i)
+			if field.String() != ""{
+				links = append(links, field.String())
+				break
+			}
+		}
+		if len(links) == 0{
+			links = append(links, olDetailsData.ThumbnailUrl)
+		}
+
 
 		return SearchInApisResponse{
 			Book: Models.Book{
-				Isbn10 : googleBook.VolumeInfo.Isbns[0].Identifier,
-				Isbn13 : googleBook.VolumeInfo.Isbns[1].Identifier,
-				Title : googleBook.VolumeInfo.Title,
+				Isbn10 : googleBookItem.VolumeInfo.Isbns[0].Identifier,
+				Isbn13 : googleBookItem.VolumeInfo.Isbns[1].Identifier,
+				Title : googleBookItem.VolumeInfo.Title,
 				Description : description,
 				ReleaseYear: uint(releaseDate),
 				// SeriesNumber: ,
@@ -124,12 +141,12 @@ func ApiCombinator(
 	
 				NumberOfPages: olDetailsData.Details.NumberOfPages,
 			},
-			Editor : olDetailsData.Details.Publisher[0],
-			Links : []string{olDetailsData.ThumbnailUrl},
-			Language : []string{ googleBook.VolumeInfo.Language },
+			Editor : publisher,
+			Links : links,
+			Language : []string{ googleBookItem.VolumeInfo.Language },
 			// Genres : olDataData.VolumeInfo.Categories,
 			Genres : genres,
-			Authors : googleBook.VolumeInfo.Authors,
+			Authors : googleBookItem.VolumeInfo.Authors,
 		}
 }
 		
